@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "52cdc0c6-5fc6-4b53-990d-b34d814f653f": {
+      "ProjectGuid": "52cdc0c6-5fc6-4b53-990d-b34d814f653f",
+      "DisplayName": "BarBeeOrder",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "95c1196a-9d4a-4e88-aab8-c6fa73ce7db9": {
+      "ProjectGuid": "95c1196a-9d4a-4e88-aab8-c6fa73ce7db9",
+      "DisplayName": "BarBeeOrder",
+      "ColorIndex": 1
+    }
+  },
+  "NextColorIndex": 2
+}
