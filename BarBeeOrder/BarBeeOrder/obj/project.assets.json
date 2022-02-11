@@ -7348,11 +7348,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Vuong\\source\\repos\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder.csproj",
+      "projectUniqueName": "E:\\BarBeeOrderProject\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder.csproj",
       "projectName": "BarBeeOrder",
-      "projectPath": "C:\\Users\\Vuong\\source\\repos\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder.csproj",
+      "projectPath": "E:\\BarBeeOrderProject\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder.csproj",
       "packagesPath": "C:\\Users\\Vuong\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Vuong\\source\\repos\\BarBeeOrder\\BarBeeOrder\\obj\\",
+      "outputPath": "E:\\BarBeeOrderProject\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Vuong\\AppData\\Roaming\\NuGet\\NuGet.Config",
