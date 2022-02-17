@@ -23,6 +23,8 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // GET: Admin/AdminProducts
         public async Task<IActionResult> Index(int? page)
         {
+            ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name");
+
             var pageNumber = page ?? 1;
             var pageSize = 10; //Show 10 rows every time
             var models = this._context.Products.Include(c => c.Category).Include(ap => ap.AttributePrices).ToPagedList(pageNumber, pageSize);
@@ -56,7 +58,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // GET: Admin/AdminProducts/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
+            ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name");
             return View();
         }
 
@@ -73,7 +75,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", product.CategoryId);
+            ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
             return View(product);
         }
 
@@ -90,7 +92,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", product.CategoryId);
+            ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
             return View(product);
         }
 
@@ -126,7 +128,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", product.CategoryId);
+            ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
             return View(product);
         }
 
