@@ -5,10 +5,17 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+            <a asp-area="Admin" asp-controller="AdminCategories" asp-action="Index" class="breadcrumb-item">Quản lí danh mục sản phẩm</a>
+            <span class="breadcrumb-item active">Chỉnh sửa danh mục sản phẩm </span>
+        </nav>
+    </div>
+</div>
 
-<h4>Category</h4>
-<hr />
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
