@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -13,10 +14,11 @@ namespace BarBeeOrder.Areas.Admin.Controllers
     public class AdminRolesController : Controller
     {
         private readonly BarBeeOrderContext _context;
-
-        public AdminRolesController(BarBeeOrderContext context)
+        public INotyfService _notyfService { get;}
+        public AdminRolesController(BarBeeOrderContext context, INotyfService notyfService)
         {
             _context = context;
+            _notyfService = notyfService;
         }
 
         // GET: Admin/AdminRoles
@@ -59,7 +61,8 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(role);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();  
+                _notyfService.Success("Tạo mới thành công!");
                 return RedirectToAction(nameof(Index));
             }
             return View(role);
@@ -98,12 +101,14 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                 try
                 {
                     _context.Update(role);
+                    _notyfService.Success("Tạo mới thành công!");
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!RoleExists(role.RoleId))
                     {
+                        _notyfService.Error("Tạo mới thất bại!");
                         return NotFound();
                     }
                     else
