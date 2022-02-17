@@ -15,7 +15,12 @@
       "ProjectGuid": "95c1196a-9d4a-4e88-aab8-c6fa73ce7db9",
       "DisplayName": "BarBeeOrder",
       "ColorIndex": 1
+    },
+    "34d4118a-b667-4ccc-83f5-debbe28f492a": {
+      "ProjectGuid": "34d4118a-b667-4ccc-83f5-debbe28f492a",
+      "DisplayName": "cccc",
+      "ColorIndex": 2
     }
   },
-  "NextColorIndex": 2
+  "NextColorIndex": 3
 }
