@@ -23,8 +23,8 @@
             <div class="col-lg-8">
                 <div class="d-md-flex">
                     <div class="m-b-10 m-r-15">
-                        <select class="custom-select" id="idrole" name="idrole" style="min-width: 200px;" asp-items="ViewBag.QuyenTruyCap">
-                            <option value="0" disabled selected>Chọn quyền truy cập</option>
+                        <select class="custom-select" id="idrole" name="idrole" style="min-width: 200px;" asp-items="ViewBag.DanhMuc">
+                            <option value="0" disabled selected>Chọn danh Mục</option>
                         </select>
                     </div>
                     <div class="m-b-10">
@@ -70,7 +70,7 @@
                                     </div>
                                 </td>
                                 <td>@item.Category.Name</td>
-                                <td>@item.Price</td>
+                                <td>@item.Price.Value.ToString("#,##0") VNĐ</td>
                                 <td>
                                     <a class="btn btn-success  btn-tone m-r-5" asp-area="Admin" asp-controller="AdminProducts" asp-action="Details" asp-route-id="@item.ProductId">Chi tiết</a>
                                     <a class="btn btn-primary  btn-tone m-r-5" asp-area="Admin" asp-controller="AdminProducts" asp-action="Edit" asp-route-id="@item.ProductId">Sửa</a>
