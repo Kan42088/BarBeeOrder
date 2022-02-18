@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Duc\\Documents\\GitHub\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder.csproj": {}
+    "C:\\Users\\Huy\\Documents\\GitHub\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Duc\\Documents\\GitHub\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder.csproj": {
+    "C:\\Users\\Huy\\Documents\\GitHub\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Duc\\Documents\\GitHub\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder.csproj",
+        "projectUniqueName": "C:\\Users\\Huy\\Documents\\GitHub\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder.csproj",
         "projectName": "BarBeeOrder",
-        "projectPath": "C:\\Users\\Duc\\Documents\\GitHub\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder.csproj",
-        "packagesPath": "C:\\Users\\Duc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Duc\\Documents\\GitHub\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder\\obj\\",
+        "projectPath": "C:\\Users\\Huy\\Documents\\GitHub\\BarBeeOrder\\BarBeeOrder\\BarBeeOrder.csproj",
+        "packagesPath": "C:\\Users\\Huy\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Huy\\Documents\\GitHub\\BarBeeOrder\\BarBeeOrder\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Duc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Huy\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

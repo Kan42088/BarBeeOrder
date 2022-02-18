@@ -1,0 +1,63 @@
+﻿@model BarBeeOrder.Models.Page
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+            <a asp-area="Admin" asp-controller="AdminPages" asp-action="Index" class="breadcrumb-item">Quản lí trang</a>
+            <span class="breadcrumb-item active">Sửa trang</span>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PageId" />
+            <div class="form-group">
+                <label asp-for="PageName" class="control-label"></label>
+                <input asp-for="PageName" class="form-control" />
+                <span asp-validation-for="PageName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PageContent" class="control-label"></label>
+                <input asp-for="PageContent" class="form-control" />
+                <span asp-validation-for="PageContent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Published" class="control-label"></label>
+                <input asp-for="Published" class="form-control" />
+                <span asp-validation-for="Published" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tittle" class="control-label"></label>
+                <input asp-for="Tittle" class="form-control" />
+                <span asp-validation-for="Tittle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ordering" class="control-label"></label>
+                <input asp-for="Ordering" class="form-control" />
+                <span asp-validation-for="Ordering" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedDate" class="control-label"></label>
+                <input asp-for="CreatedDate" class="form-control" />
+                <span asp-validation-for="CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
