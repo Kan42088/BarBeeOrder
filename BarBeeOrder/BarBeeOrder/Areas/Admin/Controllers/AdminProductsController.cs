@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
-using X.PagedList;
+using PagedList.Core;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -20,18 +20,52 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             _context = context;
         }
 
-        // GET: Admin/AdminProducts
-        public async Task<IActionResult> Index(int? page)
+        public IActionResult Filter(int CatID = 0, int page = 1)
         {
-            ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name");
+            
+
+            var url = $"/Admin/AdminProducts?CatID={CatID}&page={page}";
+            if (CatID == 0)
+            {
+                url = $"/Admin/AdminProducts";
+            }
+            else
+            {
+                if (true)
+                {
+
+                }
+            }
+            
+            return Json(new { status = "success", redirectUrl = url });
+        }
+
+
+
+        // GET: Admin/AdminProducts
+        public async Task<IActionResult> Index(int? page, int CatID = 0)
+        {
+            
 
             var pageNumber = page ?? 1;
             var pageSize = 10; //Show 10 rows every time
-            var models = this._context.Products.Include(c => c.Category).Include(ap => ap.AttributePrices).ToPagedList(pageNumber, pageSize);
 
+            List<Product> lsProducts = new List<Product>();
+            if (CatID!=0)
+            {
+                lsProducts = _context.Products.AsNoTracking().Where(x => x.CategoryId == CatID).Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
+            }
+            else
+            {
+                lsProducts = _context.Products.AsNoTracking().Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
+            }
+
+            PagedList<Product> models = new PagedList<Product>(lsProducts.AsQueryable(), pageNumber, pageSize);
+            ViewBag.CurrentCateID = CatID;
             ViewBag.CurrentPage = pageNumber;
-
-            //var barBeeOrderContext = _context.Products.Include(p => p.Category);
+            ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", CatID);
+            
+            //var models = lsProducts.AsQueryable().ToPagedList(pageNumber, pageSize);
 
             return View(models);
         }

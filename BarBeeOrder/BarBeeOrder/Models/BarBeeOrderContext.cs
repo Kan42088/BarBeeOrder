@@ -34,6 +34,8 @@ namespace BarBeeOrder.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //Scaffold-DbContext "Server=;Database=BarBeeOrder;Trusted_Connection=True;uid=;pwd=;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Force
+            // dotnet dotnet-ef dbcontext scaffold "Server=;Database=BarBeeOrder;Intergrated Security=true;uid=;pwd=;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models -Force
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer("Data Source=DESKTOP-H7E9QG7;Initial Catalog=BarBeeOrder;Persist Security Info=True;User ID=vuong;Password=123a123a");
