@@ -24,6 +24,8 @@ namespace BarBeeOrder.Models
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string Tittle { get; set; }
+        public string Thumb { get; set; }
+        public bool BestSellers { get; set; }
 
         public virtual Category Category { get; set; }
         public virtual ICollection<AttributePrice> AttributePrices { get; set; }

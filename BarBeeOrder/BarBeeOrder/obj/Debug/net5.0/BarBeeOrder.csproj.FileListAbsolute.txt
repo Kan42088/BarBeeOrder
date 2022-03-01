@@ -1466,3 +1466,5 @@ C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5
 C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\BarBeeOrder.genruntimeconfig.cache
 C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\PagedList.Core.dll
 C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\PagedList.Core.Mvc.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\PagedList.Core.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\PagedList.Core.Mvc.dll
