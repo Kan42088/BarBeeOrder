@@ -1,6 +1,8 @@
-﻿@model IEnumerable<BarBeeOrder.Models.Post>
+﻿@using PagedList.Core;
+@model IPagedList<BarBeeOrder.Models.Post>
 
 @{
+    int CurrentPage = ViewBag.CurrentPage;
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
@@ -9,82 +11,88 @@
     <div class="header-sub-title">
         <nav class="breadcrumb breadcrumb-dash">
             <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
-            <span class="breadcrumb-item active">Danh sách bài đăng</span>
+            <span class="breadcrumb-item active">Danh sách bài đăng trang @CurrentPage</span>
         </nav>
     </div>
 </div>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Tittle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ShortContent)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PostContent)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Published)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CategoryId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsHot)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Account)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tittle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ShortContent)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostContent)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Published)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsHot)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Account.AccountId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PostId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PostId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PostId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="card">
+    <div class="card-body">
+        <div class="row m-b-30">
+            <div class="col-lg-8">
+                <div class="d-md-flex">
+                    <div class="m-b-10 m-r-15">
+                        <select class="custom-select" id="txtCatID" name="txtCatID" style="min-width: 200px;" asp-items="ViewBag.DanhMuc">
+                            <option value="0" selected>Chọn tất cả</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-4 text-right">
+                <a class="btn btn-primary" asp-area="Admin" asp-controller="AdminPosts" asp-action="Create">
+
+                    <i class="anticon anticon-plus-circle m-r-5"></i>
+                    <span>Tạo bài đăng</span>
+
+                </a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover e-commerce-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tiêu đề</th>
+                        <th>Tác giả</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                   @item.PostId
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img class="img-fluid rounded" src="assets/images/others/thumb-9.jpg" style="max-width: 60px" alt="">
+                                        <h6 class="m-b-0 m-l-10">@item.Tittle</h6>
+                                    </div>
+                                </td>
+                                <td>@item.Author</td>
+                                <td> @if (item.Published)
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <div class="badge badge-success badge-dot m-r-10"></div>
+                                            <div>Hiển thị</div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <div class="badge badge-danger badge-dot m-r-10"></div>
+                                            <div>Không hiển thị</div>
+                                        </div>
+                                    }</td>
+                                <td>
+                                    <a class="btn btn-success  btn-tone m-r-5" asp-area="Admin" asp-controller="AdminPosts" asp-action="Details" asp-route-id="@item.PostId">Chi tiết</a>
+                                    <a class="btn btn-primary  btn-tone m-r-5" asp-area="Admin" asp-controller="AdminPosts" asp-action="Edit" asp-route-id="@item.PostId">Sửa</a>
+                                    <a class="btn btn-danger btn-tone m-r-5" asp-area="Admin" asp-controller="AdminPosts" asp-action="Delete" asp-route-id="@item.PostId">Xóa</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <div aria-label="Page navigation example">
+                <ul class="pagination">
+                    <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminProducts" asp--route-CatID="@ViewBag.CurrentCateID" asp-action="Index" />
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
