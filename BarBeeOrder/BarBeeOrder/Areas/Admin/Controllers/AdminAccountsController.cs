@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
+using X.PagedList;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -20,7 +21,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminAccounts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page)
         {
             ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description");
 
@@ -29,8 +30,10 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             listStatus.Add(new SelectListItem() { Text = "Không hoạt động", Value = "0" });
             ViewData["TrangThai"] = listStatus;
 
-            var barBeeOrderContext = _context.Accounts.Include(a => a.Roll);
-            return View(await barBeeOrderContext.ToListAsync());
+            var pageNumber = page ?? 1;
+            var pageSize = 10; //Show 10 rows every time
+            var models = _context.Accounts.Include(a => a.Roll).ToPagedList(pageNumber,pageSize);
+            return View(models);
         }
 
         // GET: Admin/AdminAccounts/Details/5

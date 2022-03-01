@@ -1,4 +1,8 @@
-﻿@model IEnumerable<BarBeeOrder.Models.Account>
+﻿
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core.Fluent;
+@model IPagedList<BarBeeOrder.Models.Account>
 
 @{
     ViewData["Title"] = "Danh sách tài khoản";
@@ -46,7 +50,7 @@
                         <th>Họ tên</th>
                         <th>Email</th>
                         <th>Điện thoại</th>
-                        <th>Lần đăng nhập gần đây</th>>
+                        @*<th>Lần đăng nhập gần đây</th>>*@
                         <th>Quyền truy cập</th>
                         <th>Trạng thái</th>
                         <th></th>
@@ -69,7 +73,7 @@
                                 </td>
                                 <td>@item.Email</td>
                                 <td>@item.Phone</td>
-                                <td>@item.LastLogin</td>
+                               @* <td>@item.LastLogin</td>*@
                                 <td>@item.Roll.Description</td>
                                 <td>
                                     @if (item.Status)
@@ -98,6 +102,7 @@
                     }
                 </tbody>
             </table>
+            @Html.PagedListPager( Model, page => Url.Action("Index", new { page}) )
         </div>
     </div>
 </div>
