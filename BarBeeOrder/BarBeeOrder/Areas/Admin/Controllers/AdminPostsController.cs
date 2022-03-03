@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
+using PagedList.Core;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -20,10 +21,15 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminPosts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page)
         {
-            var barBeeOrderContext = _context.Posts.Include(p => p.Account);
-            return View(await barBeeOrderContext.ToListAsync());
+            var pageNumber = page ?? 1;
+            var pageSize = 10; //Show 10 rows every time
+            List<Post> lsProducts = new List<Post>();
+            lsProducts = _context.Posts.AsNoTracking().Include(p => p.Account).ToList();
+            PagedList<Post> models = new PagedList<Post>(lsProducts.AsQueryable(), pageNumber, pageSize);
+            ViewBag.CurrentPage = pageNumber;
+            return View(models);
         }
 
         // GET: Admin/AdminPosts/Details/5
