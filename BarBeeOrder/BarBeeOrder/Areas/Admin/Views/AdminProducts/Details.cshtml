@@ -1,79 +1,149 @@
 ﻿@model BarBeeOrder.Models.Product
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Thông tin sản phẩm "+ Model.ProductName;
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProductName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProductName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ShortDescription)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ShortDescription)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Discount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Discount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Video)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Video)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModifiedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tittle)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tittle)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category.CategoryId)
-        </dd>
-    </dl>
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+            <a asp-area="Admin" asp-controller="AdminProducts" asp-action="Index" class="breadcrumb-item">Danh sách sản phẩm</a>
+            <span class="breadcrumb-item active">Chi tiết sản phẩm: @Model.ProductName</span>
+        </nav>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ProductId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Thông tin sản phẩm</h4>
+        <div class="table-responsive">
+            <table class="product-info-table m-t-20">
+                <tbody>
+                    <tr>
+                        <td>ID:</td>
+                        <td class="text-dark font-weight-semibold">@Model.ProductId</td>
+                    </tr>
+                    <tr>
+                        <td>Tên:</td>
+                        <td>@Model.ProductName</td>
+                    </tr>
+                    <tr>
+                        <td>Ảnh đại diện:</td>
+                        <td>
+                            <img width="200" height="200" src="~/images/products/@Model.Thumb" alt="@Model.Tittle" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mô tả ngắn:</td>
+                        <td>@Model.ShortDescription</td>
+                    </tr>
+                    <tr>
+                        <td>Giá:</td>
+                        <td>@Model.Price</td>
+                    </tr>
+                    <tr>
+                        <td>Hoạt động:</td>
+                        <td>
+                            @if (Model.Active)
+                            {
+                                <div class="form-group d-flex align-items-center">
+                                    <div class="switch d-inline m-r-10">
+                                        <input type="checkbox" id="switch-4" disabled="" checked="">
+                                        <label for="switch-4"></label>
+                                    </div>
+                                    
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group d-flex align-items-center">
+                                    <div class="switch d-inline m-r-10">
+                                        <input type="checkbox" id="switch-4" disabled="">
+                                        <label for="switch-4"></label>
+                                    </div>
+                                    
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Xuất hiện ở trang chủ:</td>
+                        <td>
+                            @if (Model.HomeFlag)
+                            {
+                                <div class="form-group d-flex align-items-center">
+                                    <div class="switch d-inline m-r-10">
+                                        <input type="checkbox" id="switch-4" disabled="" checked="">
+                                        <label for="switch-4"></label>
+                                    </div>
+
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group d-flex align-items-center">
+                                    <div class="switch d-inline m-r-10">
+                                        <input type="checkbox" id="switch-4" disabled="">
+                                        <label for="switch-4"></label>
+                                    </div>
+
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Sản Phẩm bán chạy:</td>
+                        <td>
+                            @if (Model.BestSellers)
+                            {
+                                <div class="form-group d-flex align-items-center">
+                                    <div class="switch d-inline m-r-10">
+                                        <input type="checkbox" id="switch-4" disabled="" checked="">
+                                        <label for="switch-4"></label>
+                                    </div>
+
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group d-flex align-items-center">
+                                    <div class="switch d-inline m-r-10">
+                                        <input type="checkbox" id="switch-4" disabled="">
+                                        <label for="switch-4"></label>
+                                    </div>
+
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Discount:</td>
+                        <td>@Model.Discount</td>
+                    </tr>
+                    <tr>
+                        <td>Danh mục:</td>
+                        <td>@Model.Category.Name</td>
+                    </tr>
+                    <tr>
+                        <td>Ngày tạo:</td>
+                        <td>@Model.CreatedDate</td>
+                    </tr>
+                    <tr>
+                        <td>Ngày chỉnh sửa cuối:</td>
+                        <td>@Model.ModifiedDate</td>
+                    </tr>
+                    <tr>
+                        <td>Tiêu đề:</td>
+                        <td>@Model.Tittle</td>
+                    <tr>
+                        <td>Mô tả:</td>
+                        <td>@Model.Description</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

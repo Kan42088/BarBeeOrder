@@ -16,6 +16,7 @@
 </div>
 
 <form asp-controller="AdminProducts" asp-action="Create" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="page-header no-gutters has-tab">
         <div class="d-md-flex m-b-15 align-items-center justify-content-between">
             <div class="media align-items-center m-b-15">
@@ -30,13 +31,13 @@
         </div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#product-edit-basic">Basic Info</a>
+                <a class="nav-link active" data-toggle="tab" href="#product-edit-basic">Thông tin cơ bản</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#product-edit-option">Option Info</a>
+                <a class="nav-link" data-toggle="tab" href="#product-edit-option">Thông chi tiết</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#product-edit-description">Description</a>
+                <a class="nav-link" data-toggle="tab" href="#product-edit-description">Mô tả</a>
             </li>
         </ul>
     </div>
@@ -61,7 +62,6 @@
                     <div class="form-group">
                         <label class="font-weight-semibold" for="productCategory">Danh mục sản phẩm</label>
                         <select class="custom-select" asp-for="CategoryId" style="min-width: 200px;" asp-items="ViewBag.DanhMuc">
-                            <option value="0" selected>Chọn tất cả</option>
                         </select>
 
                     </div>
@@ -121,8 +121,8 @@
             <div class="card">
                 <div class="card-body">
                     @*<div id="productDescription">
-            <p>Special cloth alert. The key to more success is to have a lot of pillows. Surround yourself with angels, positive energy, beautiful people, beautiful souls, clean heart, angel. They will try to close the door on you, just open it. A major key, never panic. Don’t panic, when it gets crazy and rough, don’t panic, stay calm. They key is to have every key, the key to open every door.The other day the grass was brown, now it’s green because I ain’t give up. Never surrender. Lion! I’m up to something. Always remember in the jungle there’s a lot of they in there, after you overcome they, you will make it to paradise.</p>
-        </div>*@
+                            <p>Special cloth alert. The key to more success is to have a lot of pillows. Surround yourself with angels, positive energy, beautiful people, beautiful souls, clean heart, angel. They will try to close the door on you, just open it. A major key, never panic. Don’t panic, when it gets crazy and rough, don’t panic, stay calm. They key is to have every key, the key to open every door.The other day the grass was brown, now it’s green because I ain’t give up. Never surrender. Lion! I’m up to something. Always remember in the jungle there’s a lot of they in there, after you overcome they, you will make it to paradise.</p>
+                        </div>*@
                     <label class="font-weight-semibold" for="productColors">Mô tả Sản phẩm</label>
                     <input type="text" class="form-control" asp-for="Description">
                 </div>

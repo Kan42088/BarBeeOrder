@@ -101,14 +101,14 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                 try
                 {
                     _context.Update(role);
-                    _notyfService.Success("Tạo mới thành công!");
+                    _notyfService.Success("Chỉnh sửa thành công!");
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!RoleExists(role.RoleId))
                     {
-                        _notyfService.Error("Tạo mới thất bại!");
+                        _notyfService.Error("Chỉnh sửa thất bại!");
                         return NotFound();
                     }
                     else
@@ -147,6 +147,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             var role = await _context.Roles.FindAsync(id);
             _context.Roles.Remove(role);
             await _context.SaveChangesAsync();
+            _notyfService.Warning("Xoá thành công!");
             return RedirectToAction(nameof(Index));
         }
 
