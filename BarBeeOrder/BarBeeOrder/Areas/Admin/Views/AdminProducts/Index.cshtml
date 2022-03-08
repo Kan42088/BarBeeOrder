@@ -77,7 +77,7 @@
             </table>
             <div aria-label="Page navigation example">
                 <ul class="pagination">
-                    <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminProducts" asp--route-CatID="@ViewBag.CurrentCateID" asp-action="Index" />
+                    <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminProducts" asp-route-CatID="@ViewBag.CurrentCateID" asp-action="Index" />
                 </ul>
             </div>
             @*@Html.PagedListPager( Model, page => Url.Action("Index", new { page}))*@

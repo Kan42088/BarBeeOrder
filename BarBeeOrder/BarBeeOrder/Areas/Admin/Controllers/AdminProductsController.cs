@@ -9,6 +9,7 @@ using BarBeeOrder.Models;
 using PagedList.Core;
 using BarBeeOrder.Helper;
 using System.IO;
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -16,10 +17,11 @@ namespace BarBeeOrder.Areas.Admin.Controllers
     public class AdminProductsController : Controller
     {
         private readonly BarBeeOrderContext _context;
-
-        public AdminProductsController(BarBeeOrderContext context)
+        public INotyfService _notyfService { get; }
+        public AdminProductsController(BarBeeOrderContext context, INotyfService notyfService)
         {
             _context = context;
+            _notyfService = notyfService;
         }
 
         public IActionResult Filter(int CatID = 0, int page = 1)
@@ -47,10 +49,8 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // GET: Admin/AdminProducts
         public async Task<IActionResult> Index(int? page, int CatID = 0)
         {
-            
-
             var pageNumber = page ?? 1;
-            var pageSize = 10; //Show 10 rows every time
+            var pageSize = 5; //Show 10 rows every time
 
             List<Product> lsProducts = new List<Product>();
             if (CatID!=0)
@@ -123,6 +123,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
 
                 _context.Add(product);
                 await _context.SaveChangesAsync();
+                _notyfService.Success("Tạo mới thành công!");
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
@@ -176,12 +177,14 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     product.ModifiedDate = DateTime.Now;
 
                     _context.Update(product);
+                    _notyfService.Success("Chỉnh sửa thành công!");
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ProductExists(product.ProductId))
                     {
+                        _notyfService.Error("Chỉnh sửa thất bại!");
                         return NotFound();
                     }
                     else
@@ -222,6 +225,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             var product = await _context.Products.FindAsync(id);
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
+            _notyfService.Warning("Xóa thành công!");
             return RedirectToAction(nameof(Index));
         }
 
