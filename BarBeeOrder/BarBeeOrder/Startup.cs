@@ -30,7 +30,7 @@ namespace BarBeeOrder
         {
             string stringConnnectDb = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<BarBeeOrderContext>(option => option.UseSqlServer(stringConnnectDb));
-            services.AddNotyf(config => { config.DurationInSeconds = 10;config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
+            services.AddNotyf(config => { config.DurationInSeconds = 5;config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
 
             services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] {UnicodeRanges.All}));
             services.AddControllersWithViews().AddRazorRuntimeCompilation();

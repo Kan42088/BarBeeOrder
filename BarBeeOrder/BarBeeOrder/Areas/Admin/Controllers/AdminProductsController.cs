@@ -50,7 +50,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         public async Task<IActionResult> Index(int? page, int CatID = 0)
         {
             var pageNumber = page ?? 1;
-            var pageSize = 5; //Show 10 rows every time
+            var pageSize = 5; //Show 5 rows every time
 
             List<Product> lsProducts = new List<Product>();
             if (CatID!=0)
@@ -116,7 +116,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                 }
                 if (string.IsNullOrEmpty(product.Thumb))
                 {
-                    product.Thumb = "default.png";
+                    product.Thumb = "default.jpg";
                 }
                 product.ModifiedDate = DateTime.Now;
                 product.CreatedDate = DateTime.Now;
