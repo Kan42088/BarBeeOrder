@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
-using X.PagedList;
+using PagedList.Core;
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -14,14 +15,15 @@ namespace BarBeeOrder.Areas.Admin.Controllers
     public class AdminAccountsController : Controller
     {
         private readonly BarBeeOrderContext _context;
-
-        public AdminAccountsController(BarBeeOrderContext context)
+        public INotyfService _notyfService { get; }
+        public AdminAccountsController(BarBeeOrderContext context, INotyfService notyfService)
         {
             _context = context;
+            _notyfService = notyfService;
         }
 
         // GET: Admin/AdminAccounts
-        public async Task<IActionResult> Index(int? page)
+        public async Task<IActionResult> Index(int? page,int RolesID = 0)
         {
             ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description");
 
@@ -31,8 +33,23 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             ViewData["TrangThai"] = listStatus;
 
             var pageNumber = page ?? 1;
-            var pageSize = 10; //Show 10 rows every time
-            var models = _context.Accounts.Include(a => a.Roll).ToPagedList(pageNumber,pageSize);
+            var pageSize = 5; //Show 5 rows every time
+
+            List<Account> lsAccounts = new List<Account>();
+            if (RolesID != 0)
+            {
+                lsAccounts = _context.Accounts.AsNoTracking().Where(x => x.RollId == RolesID).Include(c => c.Roll).OrderByDescending(x => x.AccountId).ToList();
+            }
+            else
+            {
+                lsAccounts = _context.Accounts.AsNoTracking().Include(c => c.Roll).OrderByDescending(x => x.AccountId).ToList();
+            }
+
+            PagedList<Account> models = new PagedList<Account>(lsAccounts.AsQueryable(), pageNumber, pageSize);
+            ViewBag.CurrentRoleID = RolesID;
+            ViewBag.CurrentPage = pageNumber;
+
+            //var models = _context.Accounts.Include(a => a.Roll).ToPagedList(pageNumber,pageSize);
             return View(models);
         }
 
@@ -58,7 +75,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // GET: Admin/AdminAccounts/Create
         public IActionResult Create()
         {
-            ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleId");
+            ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleName");
             return View();
         }
 
