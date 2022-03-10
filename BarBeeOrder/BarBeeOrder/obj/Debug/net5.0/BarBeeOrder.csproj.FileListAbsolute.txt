@@ -980,3 +980,4 @@ C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5
 C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\ref\BarBeeOrder.dll
 C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\BarBeeOrder.pdb
 C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\BarBeeOrder.genruntimeconfig.cache
+C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\Search\ListProductSearchPartial.cshtml.g.cs
