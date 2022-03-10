@@ -67,6 +67,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                 
                 _context.Add(page);
                 await _context.SaveChangesAsync();
+                _notyfService.Success("Tạo mới thành công!");
                 return RedirectToAction(nameof(Index));
             }
             return View(page);
@@ -105,6 +106,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                 try
                 {
                     _context.Update(page);
+                    _notyfService.Success("Chỉnh sửa thành công!");
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -149,6 +151,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             var page = await _context.Pages.FindAsync(id);
             _context.Pages.Remove(page);
             await _context.SaveChangesAsync();
+            _notyfService.Warning("Xóa thành công!");
             return RedirectToAction(nameof(Index));
         }
 
