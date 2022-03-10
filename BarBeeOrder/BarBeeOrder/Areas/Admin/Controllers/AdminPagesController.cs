@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
-using X.PagedList;
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -14,18 +14,23 @@ namespace BarBeeOrder.Areas.Admin.Controllers
     public class AdminPagesController : Controller
     {
         private readonly BarBeeOrderContext _context;
-
-        public AdminPagesController(BarBeeOrderContext context)
+        public INotyfService _notyfService { get; }
+        public AdminPagesController(BarBeeOrderContext context, INotyfService notyfService)
         {
             _context = context;
+            _notyfService = notyfService;
         }
 
         // GET: Admin/AdminPages
-        public async Task<IActionResult> Index(int? page)
+        public async Task<IActionResult> Index()
         {
-            var pageNumber = page ?? 1;
-            var pageSize = 10; //Show 10 rows every time
-            var models = _context.Pages.AsNoTracking().OrderByDescending(x=> x.PageId).ToPagedList();
+            List<SelectListItem> listStatus = new List<SelectListItem>();
+            listStatus.Add(new SelectListItem() { Text = "Hoạt động", Value = "1" });
+            listStatus.Add(new SelectListItem() { Text = "Không hoạt động", Value = "0" });
+            ViewData["TrangThai"] = listStatus;
+
+            var models = _context.Pages.OrderByDescending(x=> x.PageId).ToList();
+
             return View(models);
         }
 

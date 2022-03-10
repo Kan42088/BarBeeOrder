@@ -1,7 +1,4 @@
-﻿@using X.PagedList.Mvc.Core;
-@using X.PagedList;
-@using X.PagedList.Mvc.Core.Fluent;
-@model IPagedList<BarBeeOrder.Models.Page>
+﻿@model List<BarBeeOrder.Models.Page>
 
 @{
     ViewData["Title"] = "Index";
@@ -30,12 +27,12 @@
                     </div>
                 </div>
             </div>
-            @*<div class="col-lg-4 text-right">
-                <button class="btn btn-primary" asp-area="Admin" asp-controller="AdminCustomers" asp-action="Create">
-                <i class="anticon anticon-plus-circle m-r-5"></i>
-                <span>Tạo tài khoản</span>
-                </button>
-                </div>*@
+            <div class="col-lg-4 text-right">
+                <a class="btn btn-primary" asp-area="Admin" asp-controller="AdminPages" asp-action="Create">
+                    <i class="anticon anticon-plus-circle m-r-5"></i>
+                    <span>Tạo sản phẩm</span>
+                </a>
+            </div>
         </div>
         <div class="table-responsive">
             <table class="table table-hover e-commerce-table">
@@ -43,7 +40,6 @@
                     <tr>
                         <th>ID</th>
                         <th>Tên Trang</th>
-                        <th>Tiêu đề</th>
                         <th>Trạng thái</th>
                         <th></th>
                     </tr>
@@ -63,7 +59,6 @@
                                         <h6 class="m-b-0 m-l-10">@item.PageName</h6>
                                     </div>
                                 </td>
-                                <td>@item.Tittle</td>
                                 <td>
                                     @if (item.Published!= null && item.Published==true )
                                     {
@@ -91,12 +86,6 @@
                     }
                 </tbody>
             </table>
-            @*<div aria-label="Page">
-                <ul class="pagination">
-                <pager  class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminCustomers" asp-action="Index"/>
-                </ul>
-                </div>*@
-            @Html.PagedListPager( Model, page => Url.Action("Index", new { page}) )
         </div>
     </div>
 </div>
