@@ -103,7 +103,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,ProductName,ShortDescription,CategoryId,Description,Price,Discount,Video,CreatedDate,ModifiedDate,Tittle")] Product product,Microsoft.AspNetCore.Http.IFormFile fThumb)
+        public async Task<IActionResult> Create([Bind("ProductId,ProductName,ShortDescription,CategoryId,Description,Price,Discount,Video,CreatedDate,ModifiedDate,Tittle,BestSellers,Active,HomeFlag")] Product product,Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
             if (ModelState.IsValid)
             {
@@ -152,7 +152,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ShortDescription,CategoryId,Description,Price,Discount,Video,CreatedDate,ModifiedDate,Tittle")] Product product, Microsoft.AspNetCore.Http.IFormFile fThumb)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ShortDescription,CategoryId,Description,Price,Discount,Video,CreatedDate,ModifiedDate,Tittle,BestSellers,Active,HomeFlag")] Product product, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
             if (id != product.ProductId)
             {
