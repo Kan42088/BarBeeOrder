@@ -16,8 +16,8 @@ namespace BarBeeOrder.Models
         public int? CustomerId { get; set; }
         public DateTime? OrderDate { get; set; }
         public int? TransactionStatusId { get; set; }
-        public bool? Deleted { get; set; }
-        public bool? Paid { get; set; }
+        public bool Deleted { get; set; }
+        public bool Paid { get; set; }
         public DateTime? PaymentDate { get; set; }
         public int? PaymentId { get; set; }
         public string Note { get; set; }

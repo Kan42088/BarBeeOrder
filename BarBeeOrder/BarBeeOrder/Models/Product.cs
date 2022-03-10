@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -15,16 +14,10 @@ namespace BarBeeOrder.Models
         }
 
         public int ProductId { get; set; }
-
-        [Required]
-        [StringLength(250, ErrorMessage = "Tên không dài quá 250 kí tự")]
         public string ProductName { get; set; }
         public string ShortDescription { get; set; }
         public int? CategoryId { get; set; }
         public string Description { get; set; }
-
-        [Required]
-        [Range(0, 10000000, ErrorMessage = "Giá chỉ bao gồm số tự nhiên")]
         public int? Price { get; set; }
         public int? Discount { get; set; }
         public string Video { get; set; }
