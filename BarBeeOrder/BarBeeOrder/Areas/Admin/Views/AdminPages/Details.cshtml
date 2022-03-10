@@ -15,49 +15,59 @@
     </div>
 </div>
 
-<div>
-    <h4>Page</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PageName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PageName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PageContent)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PageContent)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Published)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Published)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tittle)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tittle)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ordering)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ordering)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.PageId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Thông tin sản phẩm</h4>
+        <div class="table-responsive">
+            <table class="product-info-table m-t-20">
+                <tbody>
+                    <tr>
+                        <td>ID:</td>
+                        <td class="text-dark font-weight-semibold">@Model.PageId</td>
+                    </tr>
+                    <tr>
+                        <td>Tên:</td>
+                        <td>@Model.PageName</td>
+                    </tr>
+                    <tr>
+                        <td>Tiêu đề:</td>
+                        <td>@Model.Tittle</td>
+                    </tr>
+                    <tr>
+                        <td>Thứ tự:</td>
+                        <td>@Model.Ordering</td>
+                    </tr>
+                    <tr>
+                        <td>Hoạt động:</td>
+                        <td>
+                            @if (Model.Published!=null && Model.Published==true)
+                            {
+                                <div class="form-group d-flex align-items-center">
+                                    <div class="switch d-inline m-r-10">
+                                        <input type="checkbox" id="switch-4" disabled="" checked="">
+                                        <label for="switch-4"></label>
+                                    </div>
+                                    
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group d-flex align-items-center">
+                                    <div class="switch d-inline m-r-10">
+                                        <input type="checkbox" id="switch-4" disabled="">
+                                        <label for="switch-4"></label>
+                                    </div>
+                                    
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Ngày tạo:</td>
+                        <td>@Model.CreatedDate</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

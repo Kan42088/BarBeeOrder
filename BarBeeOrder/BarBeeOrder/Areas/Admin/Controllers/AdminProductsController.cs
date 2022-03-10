@@ -44,8 +44,6 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             return Json(new { status = "success", redirectUrl = url });
         }
 
-
-
         // GET: Admin/AdminProducts
         public async Task<IActionResult> Index(int? page, int CatID = 0)
         {
