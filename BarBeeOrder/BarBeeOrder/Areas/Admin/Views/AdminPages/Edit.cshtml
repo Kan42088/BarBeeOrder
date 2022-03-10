@@ -4,7 +4,10 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-
+@section Styles{
+    <link href="~/AdminAssets/summernote/summernote-bs4.css" rel="stylesheet" />
+    <link href="~/AdminAssets/summernote/summernote.css" rel="stylesheet" />
+}
 <div class="page-header">
     <div class="header-sub-title">
         <nav class="breadcrumb breadcrumb-dash">
@@ -15,49 +18,89 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="PageId" />
-            <div class="form-group">
-                <label asp-for="PageName" class="control-label"></label>
-                <input asp-for="PageName" class="form-control" />
-                <span asp-validation-for="PageName" class="text-danger"></span>
+<form asp-controller="AdminPages" asp-action="Edit" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="PageId" />
+    <input type="hidden" asp-for="CreatedDate" />
+    <div class="page-header no-gutters has-tab">
+        <div class="d-md-flex m-b-15 align-items-center justify-content-between">
+            <div class="media align-items-center m-b-15">
+                <h1>Điền thông tin sản phẩm</h1>
             </div>
-            <div class="form-group">
-                <label asp-for="PageContent" class="control-label"></label>
-                <input asp-for="PageContent" class="form-control" />
-                <span asp-validation-for="PageContent" class="text-danger"></span>
+            <div class="m-b-15">
+                <button class="btn btn-primary">
+                    <i class="anticon anticon-save"></i>
+                    <span>Lưu</span>
+                </button>
             </div>
-            <div class="form-group">
-                <label asp-for="Published" class="control-label"></label>
-                <input asp-for="Published" class="form-control" />
-                <span asp-validation-for="Published" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Tittle" class="control-label"></label>
-                <input asp-for="Tittle" class="form-control" />
-                <span asp-validation-for="Tittle" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Ordering" class="control-label"></label>
-                <input asp-for="Ordering" class="form-control" />
-                <span asp-validation-for="Ordering" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#product-edit-basic">Thông tin cơ bản</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#product-edit-description">Nội dung trang</a>
+            </li>
+        </ul>
     </div>
-</div>
+    <div class="tab-content m-t-15">
+        <div class="tab-pane fade show active" id="product-edit-basic">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productName">Tên trang</label>
+                        <input type="text" class="form-control" asp-for="PageName">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="font-weight-semibold" for="productPrice">Tiêu đề </label>
+                            <input type="text" class="form-control" asp-for="Tittle">
+                            
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="font-weight-semibold" for="productPrice">Thứ tự</label>
+                            <input type="text" class="form-control" asp-for="Ordering">
+                            <span asp-validation-for="Ordering" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="m-t-25">
+                            <div class="form-group d-flex align-items-center">
+                                <div class="switch m-r-10">
+                                    <input type="checkbox" asp-for="Published" checked="">
+                                    <label for="Published"></label>
+                                </div>
+                                <label>Hoạt động </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="product-edit-description">
+            <div class="card">
+                <div class="card-body">
+                    <label class="font-weight-semibold" for="productColors">Nội dung trang</label>
+                    <textarea class="summernote" asp-for="PageContent"></textarea>
+                    @*<input type="text" class="form-control" asp-for="PageContent">*@
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+@section Scripts{
+    <script src="~/AdminAssets/vendors/select2/select2.min.js"></script>
+    <script src="~/AdminAssets/js/pages/e-commerce-product-edit.js"></script>
+    <script src="~/AdminAssets/summernote/summernote-bs4.js"></script>
+    <script>
+        jQuery(document).ready(function(){
+            $('.summernote').summernote({
+                height: 200,
+                minHeight: null,
+                maxHeight: null,
+                focus: true
+            });
+        });
+    </script>
+}

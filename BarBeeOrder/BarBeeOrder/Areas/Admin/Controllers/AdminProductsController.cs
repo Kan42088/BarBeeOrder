@@ -27,7 +27,6 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         public IActionResult Filter(int CatID = 0, int page = 1)
         {
             
-
             var url = $"/Admin/AdminProducts?CatID={CatID}&page={page}";
             if (CatID == 0)
             {

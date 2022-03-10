@@ -24,11 +24,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // GET: Admin/AdminPages
         public async Task<IActionResult> Index()
         {
-            List<SelectListItem> listStatus = new List<SelectListItem>();
-            listStatus.Add(new SelectListItem() { Text = "Hoạt động", Value = "1" });
-            listStatus.Add(new SelectListItem() { Text = "Không hoạt động", Value = "0" });
-            ViewData["TrangThai"] = listStatus;
-
+            
             var models = _context.Pages.OrderByDescending(x=> x.PageId).ToList();
 
             return View(models);
@@ -67,6 +63,8 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                page.CreatedDate = DateTime.Now;    
+                
                 _context.Add(page);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

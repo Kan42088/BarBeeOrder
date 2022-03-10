@@ -4,7 +4,10 @@
     ViewData["Title"] = "Create";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-
+@section Styles{
+    <link href="~/AdminAssets/summernote/summernote-bs4.css" rel="stylesheet" />
+    <link href="~/AdminAssets/summernote/summernote.css" rel="stylesheet" />
+}
 <div class="page-header">
     <div class="header-sub-title">
         <nav class="breadcrumb breadcrumb-dash">
@@ -15,7 +18,7 @@
     </div>
 </div>
 
-<form asp-controller="AdminProducts" asp-action="Create" method="post" enctype="multipart/form-data">
+<form asp-controller="AdminPages" asp-action="Create" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="page-header no-gutters has-tab">
         <div class="d-md-flex m-b-15 align-items-center justify-content-between">
@@ -25,7 +28,7 @@
             <div class="m-b-15">
                 <button class="btn btn-primary">
                     <i class="anticon anticon-save"></i>
-                    <span>Save</span>
+                    <span>Tạo mới</span>
                 </button>
             </div>
         </div>
@@ -34,10 +37,7 @@
                 <a class="nav-link active" data-toggle="tab" href="#product-edit-basic">Thông tin cơ bản</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#product-edit-option">Thông chi tiết</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#product-edit-description">Mô tả</a>
+                <a class="nav-link" data-toggle="tab" href="#product-edit-description">Nội dung trang</a>
             </li>
         </ul>
     </div>
@@ -66,7 +66,7 @@
                             <div class="form-group d-flex align-items-center">
                                 <div class="switch m-r-10">
                                     <input type="checkbox" asp-for="Published" checked="">
-                                    <label for="Active"></label>
+                                    <label for="Published"></label>
                                 </div>
                                 <label>Hoạt động </label>
                             </div>
@@ -78,59 +78,27 @@
         <div class="tab-pane fade" id="product-edit-description">
             <div class="card">
                 <div class="card-body">
-                    @*<div id="productDescription">
-                            <p>Special cloth alert. The key to more success is to have a lot of pillows. Surround yourself with angels, positive energy, beautiful people, beautiful souls, clean heart, angel. They will try to close the door on you, just open it. A major key, never panic. Don’t panic, when it gets crazy and rough, don’t panic, stay calm. They key is to have every key, the key to open every door.The other day the grass was brown, now it’s green because I ain’t give up. Never surrender. Lion! I’m up to something. Always remember in the jungle there’s a lot of they in there, after you overcome they, you will make it to paradise.</p>
-                        </div>*@
                     <label class="font-weight-semibold" for="productColors">Nội dung trang</label>
-                    <input type="text" class="form-control" asp-for="PageContent">
+                    <textarea class="summernote" asp-for="PageContent"></textarea>
+                    @*<input type="text" class="form-control" asp-for="PageContent">*@
                 </div>
             </div>
         </div>
     </div>
 </form>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="PageName" class="control-label"></label>
-                <input asp-for="PageName" class="form-control" />
-                <span asp-validation-for="PageName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PageContent" class="control-label"></label>
-                <input asp-for="PageContent" class="form-control" />
-                <span asp-validation-for="PageContent" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Published" class="control-label"></label>
-                <input asp-for="Published" class="form-control" />
-                <span asp-validation-for="Published" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Tittle" class="control-label"></label>
-                <input asp-for="Tittle" class="form-control" />
-                <span asp-validation-for="Tittle" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Ordering" class="control-label"></label>
-                <input asp-for="Ordering" class="form-control" />
-                <span asp-validation-for="Ordering" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+@section Scripts{
+    <script src="~/AdminAssets/vendors/select2/select2.min.js"></script>
+    <script src="~/AdminAssets/js/pages/e-commerce-product-edit.js"></script>
+    <script src="~/AdminAssets/summernote/summernote-bs4.js"></script>
+    <script>
+        jQuery(document).ready(function(){
+            $('.summernote').summernote({
+                height: 200,
+                minHeight: null,
+                maxHeight: null,
+                focus: true
+            });
+        });
+    </script>
+}

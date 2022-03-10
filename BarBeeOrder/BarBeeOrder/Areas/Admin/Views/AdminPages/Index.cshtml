@@ -12,25 +12,28 @@
         </nav>
     </div>
 </div>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <div class="card">
     <div class="card-body">
         <div class="row m-b-30">
             <div class="col-lg-8">
-                <div class="d-md-flex">
-                    <div class="m-b-10">
-                        <select class="custom-select" id="idstatus" name="idstatus" style="min-width: 200px;" asp-items="ViewBag.TrangThai">
-                            <option value="0" disabled selected>Chọn trạng thái</option>
-                        </select>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-affix m-b-10">
+                            <i class="prefix-icon anticon anticon-search"></i>
+                            <input id="keyword" name="keyword" type="text" class="form-control" placeholder="Tìm kiếm trang">
+                        </div>
                     </div>
+                    <div class="col-md-6">
+
+                    </div>
+                </div>
+                <div class="d-md-flex">
                 </div>
             </div>
             <div class="col-lg-4 text-right">
                 <a class="btn btn-primary" asp-area="Admin" asp-controller="AdminPages" asp-action="Create">
                     <i class="anticon anticon-plus-circle m-r-5"></i>
-                    <span>Tạo sản phẩm</span>
+                    <span>Tạo trang</span>
                 </a>
             </div>
         </div>
@@ -44,7 +47,7 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="records_table">
                     @if (Model != null)
                     {
                         foreach (var item in Model)
@@ -60,7 +63,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    @if (item.Published!= null && item.Published==true )
+                                    @if (item.Published)
                                     {
                                         <div class="d-flex align-items-center">
                                             <div class="badge badge-success badge-dot m-r-10"></div>
@@ -89,3 +92,25 @@
         </div>
     </div>
 </div>
+@section Scripts{
+    <script>
+        $(document).ready(function(){
+            $("#keyword").keyup( async function(){
+                var strkeyword = $('#keyword').val();
+                $.ajax({
+                    url: "/Admin/Search/FindPage?keyword="+strkeyword,
+                    type: "Get",
+                    async: true,
+                    success: function(respone){
+                        console.log(respone);
+                        $('#records_table').html("");
+                        $('#records_table').html(respone);
+                    },
+                    error: function(xhr){
+                        alert("loi " + xhr.status);
+                    }
+                });
+            });
+        });
+</script>
+}
