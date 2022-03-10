@@ -1474,3 +1474,4 @@ C:\Users\Huy\Documents\GitHub\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\ref\BarBe
 C:\Users\Huy\Documents\GitHub\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\BarBeeOrder.pdb
 C:\Users\Huy\Documents\GitHub\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\BarBeeOrder.genruntimeconfig.cache
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\Search\ListProductSearchPartial.cshtml.g.cs
+C:\Users\Huy\Documents\GitHub\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\Search\ListPageSearchPartial.cshtml.g.cs

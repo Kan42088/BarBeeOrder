@@ -38,5 +38,28 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             }
 
         }
+
+        //Get: /Search/FindPage
+        [HttpGet]
+        public IActionResult FindPage(string keyword)
+        {
+            List<Page> lsPages = new List<Page>();
+            if (string.IsNullOrEmpty(keyword) || keyword.Length < 1)
+            {
+                lsPages = _context.Pages.AsNoTracking().OrderByDescending(x => x.PageId).ToList();
+                return PartialView("ListPageSearchPartial", lsPages);
+            }
+
+            lsPages = _context.Pages.AsNoTracking().Where(x => x.PageName.Contains(keyword)).ToList();
+            if (lsPages == null)
+            {
+                return PartialView("ListPageSearchPartial", null);
+            }
+            else
+            {
+                return PartialView("ListPageSearchPartial", lsPages);
+            }
+
+        }
     }
 }

@@ -1,0 +1,46 @@
+﻿@model List<Page>
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.PageId
+            </td>
+            <td>
+                <div class="d-flex align-items-center">
+                    <img class="img-fluid rounded" src="assets/images/others/thumb-9.jpg" style="max-width: 60px" alt="">
+                    <h6 class="m-b-0 m-l-10">@item.PageName</h6>
+                </div>
+            </td>
+            <td>
+                @if (item.Published)
+                {
+                    <div class="d-flex align-items-center">
+                        <div class="badge badge-success badge-dot m-r-10"></div>
+                        <div>Hoạt động</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center">
+                        <div class="badge badge-danger badge-dot m-r-10"></div>
+                        <div>Không hoạt động</div>
+                    </div>
+                }
+
+            </td>
+            <td>
+                <a class="btn btn-success  btn-tone m-r-5" asp-area="Admin" asp-controller="AdminPages" asp-action="Details" asp-route-id="@item.PageId">Chi tiết</a>
+                <a class="btn btn-primary  btn-tone m-r-5" asp-area="Admin" asp-controller="AdminPages" asp-action="Edit" asp-route-id="@item.PageId">Sửa</a>
+                <a class="btn btn-danger btn-tone m-r-5" asp-area="Admin" asp-controller="AdminPages" asp-action="Delete" asp-route-id="@item.PageId">Xóa</a>
+            </td>
+        </tr>
+    }
+    if(Model.Count == 0)
+    {
+        <h1>Không tìm thấy kết quả nào!</h1>
+    }
+}
+
+
