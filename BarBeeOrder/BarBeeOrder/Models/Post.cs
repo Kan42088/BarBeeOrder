@@ -17,6 +17,7 @@ namespace BarBeeOrder.Models
         public bool Published { get; set; }
         public string CreatedDate { get; set; }
         public int? Author { get; set; }
+        [Required(ErrorMessage = "Không được trống!")]
         public int? AccountId { get; set; }
         public int? CategoryId { get; set; }
         public bool? IsHot { get; set; }

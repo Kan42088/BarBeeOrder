@@ -21,8 +21,8 @@
             <div class="col-lg-8">
                 <div class="d-md-flex">
                     <div class="m-b-10 m-r-15">
-                        <select class="custom-select" id="txtCatID" name="txtCatID" style="min-width: 200px;" asp-items="ViewBag.DanhMuc">
-                            <option value="0" selected>Chọn tất cả</option>
+                        <select class="custom-select" id="txtStatus" name="txtStatus" style="min-width: 200px;" asp-items="ViewBag.TrangThai">
+                            <option value="-1" selected>Chọn tất cả</option>
                         </select>
                     </div>
 
@@ -63,7 +63,7 @@
                                         <h6 class="m-b-0 m-l-10">@item.Tittle</h6>
                                     </div>
                                 </td>
-                                <td>@item.Author</td>
+                                <td>@item.Account.Fullname</td>
                                 <td> @if (item.Published)
                                     {
                                         <div class="d-flex align-items-center">
@@ -90,9 +90,58 @@
             </table>
             <div aria-label="Page navigation example">
                 <ul class="pagination">
-                    <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminProducts" asp--route-CatID="@ViewBag.CurrentCateID" asp-action="Index" />
+                    <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminPosts" asp-route-Published="@ViewBag.CurrentStatus" asp-action="Index" />
                 </ul>
             </div>
         </div>
     </div>
 </div>
+@section Scripts{
+<script>
+        $(document).ready(function(){
+
+            jQuery("#txtStatus").change(function(){
+                var published = jQuery(this).children(":selected").attr("value");
+                published = parseInt(published);
+                $('#txtStatus option')
+                .removeAttr('selected');
+                $("#txtStatus > [value" + published + "]").attr("selected", "true");
+
+                $.ajax({
+                    url:'/Admin/AdminPosts/Filter',
+                    dataType:"json",
+                    type: "GET",
+                    data: {
+                        Published: published
+                    },
+                    async: true,
+                    success: function(results){
+                        if(results.published == "success"){
+                            window.location.href = results.redirectUrl;
+                        }
+                    },
+                    error: function(xhr){
+                        alert("error");
+                    }
+                });
+            });
+            
+            $("#keyword").keyup( async function(){
+                var strkeyword = $('#keyword').val();
+                $.ajax({
+                    url: "/Admin/Search/FindPost?keyword="+strkeyword,
+                    type: "Get",
+                    async: true,
+                    success: function(respone){
+                        console.log(respone);
+                        $('#records_table').html("");
+                        $('#records_table').html(respone);
+                    },
+                    error: function(xhr){
+                        alert("loi " + xhr.status);
+                    }
+                });
+            });
+        });
+</script>
+}

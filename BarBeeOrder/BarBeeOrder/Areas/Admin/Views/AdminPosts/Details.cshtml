@@ -15,67 +15,64 @@
     </div>
 </div>
 
-<div>
-    <h4>Post</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tittle)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tittle)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ShortContent)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ShortContent)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PostContent)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PostContent)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Published)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Published)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Author)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Author)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CategoryId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CategoryId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsHot)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsHot)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Account)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Account.AccountId)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.PostId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Thông tin sản phẩm</h4>
+        <div class="table-responsive">
+            <table class="product-info-table m-t-20">
+                <tbody>
+                    <tr>
+                        <td>ID:</td>
+                        <td class="text-dark font-weight-semibold">@Model.PostId</td>
+                    </tr>
+                    <tr>
+                        <td>Tiêu đề:</td>
+                        <td>@Model.Tittle</td>
+                    </tr>
+                    <tr>
+                        <td>Tác giả:</td>
+                        <td>@Model.Account.Fullname</td>
+                    </tr>
+                    <tr>
+                        <td>Mô tả ngắn:</td>
+                        <td>@Model.ShortContent</td>
+                    </tr>
+                    <tr>
+                        <td>Ngày đăng:</td>
+                        <td>@Model.CreatedDate</td>
+                    </tr>
+                    <tr>
+                        <td>Hoạt động:</td>
+                        <td>
+                            @if (Model.Published)
+                            {
+                                <div class="form-group d-flex align-items-center">
+                                    <div class="switch d-inline m-r-10">
+                                        <input type="checkbox" id="switch-4" disabled="" checked="">
+                                        <label for="switch-4"></label>
+                                    </div>
+                                    
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group d-flex align-items-center">
+                                    <div class="switch d-inline m-r-10">
+                                        <input type="checkbox" id="switch-4" disabled="">
+                                        <label for="switch-4"></label>
+                                    </div>
+                                    
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Nội dung:</td>
+                        <td>@Model.PostContent</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

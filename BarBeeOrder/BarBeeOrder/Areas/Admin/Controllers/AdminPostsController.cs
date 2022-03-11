@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
 using PagedList.Core;
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -14,20 +15,52 @@ namespace BarBeeOrder.Areas.Admin.Controllers
     public class AdminPostsController : Controller
     {
         private readonly BarBeeOrderContext _context;
-
-        public AdminPostsController(BarBeeOrderContext context)
+        public INotyfService _notyfService { get; }
+        public AdminPostsController(BarBeeOrderContext context, INotyfService notyfService)
         {
             _context = context;
+            _notyfService = notyfService;
         }
 
+        public IActionResult Filter(int Published, int page = 1)
+        {
+            
+            var url = $"/Admin/AdminPosts";
+            if (Published != -1)
+            {
+                url = $"/Admin/AdminPosts?Published={Published}&page={page}";
+            }
+
+            
+            return Json(new { published = "success", redirectUrl = url });
+        }
         // GET: Admin/AdminPosts
-        public async Task<IActionResult> Index(int? page)
+        public async Task<IActionResult> Index(int? page,int Published=-1)
         {
             var pageNumber = page ?? 1;
-            var pageSize = 10; //Show 10 rows every time
-            List<Post> lsProducts = new List<Post>();
-            lsProducts = _context.Posts.AsNoTracking().Include(p => p.Account).ToList();
-            PagedList<Post> models = new PagedList<Post>(lsProducts.AsQueryable(), pageNumber, pageSize);
+            var pageSize = 5; //Show 5 rows every time
+
+            List<SelectListItem> listStatus = new List<SelectListItem>();
+            listStatus.Add(new SelectListItem() { Text = "Hoạt động", Value = "1", Selected = Published == 1? true : false });
+            listStatus.Add(new SelectListItem() { Text = "Không hoạt động", Value = "0", Selected = Published == 0 ? true : false });
+            ViewData["TrangThai"] = listStatus;
+
+            List<Post> lsPosts = new List<Post>();
+            if (Published == 1)
+            {
+                lsPosts = _context.Posts.AsNoTracking().Where(x => x.Published == true).Include(p => p.Account).OrderByDescending(x => x.PostId).ToList();
+            }
+            else if (Published == 0)
+            {
+                lsPosts = _context.Posts.AsNoTracking().Where(x => x.Published == false).Include(p => p.Account).OrderByDescending(x => x.PostId).ToList();
+            }
+            else
+            {
+                lsPosts = _context.Posts.AsNoTracking().Include(p => p.Account).OrderByDescending(x => x.PostId).ToList();
+            }
+
+            PagedList<Post> models = new PagedList<Post>(lsPosts.AsQueryable(), pageNumber, pageSize);
+            ViewBag.CurrentStatus = Published;
             ViewBag.CurrentPage = pageNumber;
             return View(models);
         }
@@ -69,6 +102,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             {
                 _context.Add(post);
                 await _context.SaveChangesAsync();
+                _notyfService.Success("Tạo mới thành công!");
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AccountId"] = new SelectList(_context.Accounts, "AccountId", "AccountId", post.AccountId);
@@ -109,6 +143,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                 try
                 {
                     _context.Update(post);
+                    _notyfService.Success("Chỉnh sửa thành công!");
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -155,6 +190,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             var post = await _context.Posts.FindAsync(id);
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
+            _notyfService.Warning("Xóa thành công!");
             return RedirectToAction(nameof(Index));
         }
 

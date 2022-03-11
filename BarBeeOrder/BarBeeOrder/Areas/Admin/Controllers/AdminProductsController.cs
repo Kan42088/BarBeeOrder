@@ -89,7 +89,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminProducts/Create
-        public IActionResult Create()
+        public IActionResult Create()   
         {
             ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name");
             return View();
