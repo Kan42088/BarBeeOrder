@@ -1,6 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
+
 <header class="main-header_area position-relative">
     <div class="header-top border-bottom d-none d-md-block">
         <div class="container">
@@ -103,12 +104,16 @@
                                     <li>
                                         <a asp-controller="Blog" asp-action="Index">Tin tức</a>
                                     </li>
-                                    <li>
-                                        <a asp-controller="Home" asp-action="About">Về chúng tôi</a>
-                                    </li>
-                                    <li>
-                                        <a asp-controller="Home" asp-action="Contact">Liên hệ</a>
-                                    </li>
+                                    @foreach (var item in (List<Page>)ViewData["MenuPages"])
+                                    {
+                                        if (item.IsHeader)
+                                        {
+                                            <li>
+                                                <a asp-controller="Page" asp-action="Details" asp-route-id="@item.PageId">@item.PageName</a>
+                                            </li>
+                                        }
+
+                                    }
                                 </ul>
                             </nav>
                         </div>
@@ -156,7 +161,7 @@
                                     </span>
                                 </a>
                             </li>
-                            
+
                             <li class="menu-item-has-children">
                                 <a href="#">
                                     <span class="mm-text">
