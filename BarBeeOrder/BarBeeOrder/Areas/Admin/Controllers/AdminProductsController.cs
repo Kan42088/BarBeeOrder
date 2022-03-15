@@ -63,7 +63,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             PagedList<Product> models = new PagedList<Product>(lsProducts.AsQueryable(), pageNumber, pageSize);
             ViewBag.CurrentCateID = CatID;
             ViewBag.CurrentPage = pageNumber;
-            ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", CatID);
+            ViewData["DanhMuc"] = new SelectList(_context.Categories.Where(x=> x.IsDeleted==false && x.Type==1), "CategoryId", "Name", CatID);
             
             //var models = lsProducts.AsQueryable().ToPagedList(pageNumber, pageSize);
 

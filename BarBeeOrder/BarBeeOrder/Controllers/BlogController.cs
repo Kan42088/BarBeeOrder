@@ -20,7 +20,7 @@ namespace BarBeeOrder.Controllers
         }
 
         // GET: BlogController/Index
-        [Route("blogs.html", Name ="Blog")]
+        [Route("tin-tuc.html", Name ="Blog")]
         public async Task<IActionResult> Index(int? page)
         {
             var pageNumber = page ?? 1;
