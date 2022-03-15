@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
-using X.PagedList;
+using PagedList.Core;
+using AspNetCoreHero.ToastNotification.Abstractions;
+using System.IO;
+using BarBeeOrder.Helper;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -14,10 +17,11 @@ namespace BarBeeOrder.Areas.Admin.Controllers
     public class AdminCategoriesController : Controller
     {
         private readonly BarBeeOrderContext _context;
-
-        public AdminCategoriesController(BarBeeOrderContext context)
+        public INotyfService _notyfService { get; }
+        public AdminCategoriesController(BarBeeOrderContext context, INotyfService notyfService)
         {
             _context = context;
+            _notyfService = notyfService;
         }
 
         // GET: Admin/AdminCategories
@@ -25,8 +29,10 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         {
             var pageNumber = page ?? 1;
             var pageSize = 10; //Show 10 rows every time
-            var models = this._context.Categories.ToPagedList(pageNumber, pageSize);
-
+            
+            List<Category> lsCategories = new List<Category>();
+            lsCategories = _context.Categories.AsNoTracking().Where(x => x.IsDeleted==false && x.Type == 1).OrderByDescending(x => x.CategoryId).ToList();
+            PagedList<Category> models = new PagedList<Category>(lsCategories.AsQueryable(), pageNumber, pageSize);
             ViewBag.CurrentPage = pageNumber;
 
             return View(models);
@@ -61,12 +67,24 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,Name,Description,ParrentId,Levels,Ordering,Published,Title,Cover")] Category category)
+        public async Task<IActionResult> Create([Bind("CategoryId,Name,Description,ParrentId,Levels,Ordering,Published,Title,Cover,Type,IsDeleted,Thumb")] Category category, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
             if (ModelState.IsValid)
             {
+                category.Type = 1;
+                if (fThumb != null)
+                {
+                    string extension = Path.GetExtension(fThumb.FileName);
+                    string image = Utilities.SEOUrl(category.Name) + extension;
+                    category.Thumb = await Utilities.UploadFile(fThumb, @"categories", image.ToLower());
+                }
+                if (string.IsNullOrEmpty(category.Thumb))
+                {
+                    category.Thumb = "default.jpg";
+                }
                 _context.Add(category);
                 await _context.SaveChangesAsync();
+                _notyfService.Success("Tạo mới thành công!");
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -93,7 +111,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,Name,Description,ParrentId,Levels,Ordering,Published,Title,Cover")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,Name,Description,ParrentId,Levels,Ordering,Published,Title,Cover,Type,IsDeleted,Thumb")] Category category, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
             if (id != category.CategoryId)
             {
@@ -104,7 +122,18 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             {
                 try
                 {
+                    if (fThumb != null)
+                    {
+                        string extension = Path.GetExtension(fThumb.FileName);
+                        string image = Utilities.SEOUrl(category.Name) + extension;
+                        category.Thumb = await Utilities.UploadFile(fThumb, @"categories", image.ToLower());
+                    }
+                    if (string.IsNullOrEmpty(category.Thumb))
+                    {
+                        category.Thumb = "default.jpg";
+                    }
                     _context.Update(category);
+                    _notyfService.Success("Chỉnh sửa thành công!");
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -147,8 +176,10 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var category = await _context.Categories.FindAsync(id);
+            category.IsDeleted = true;
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
+            _notyfService.Warning("Xóa thành công!");
             return RedirectToAction(nameof(Index));
         }
 

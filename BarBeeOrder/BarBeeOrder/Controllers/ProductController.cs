@@ -16,6 +16,7 @@ namespace BarBeeOrder.Controllers
             _context = context;
         }
 
+        [Route("cua-hang.html", Name = "Product")]
         public IActionResult Index()
         {
             List<Page> pages = new List<Page>();
