@@ -68,6 +68,13 @@
                                 </div>
                                 <label>Trạng thái</label>
                             </div>
+                            <div class="form-group d-flex align-items-center">
+                                <div class="switch m-r-10">
+                                    <input type="checkbox" asp-for="IsNewfeed">
+                                    <label for="IsNewfeed"></label>
+                                </div>
+                                <label>Bài đăng nổi bật</label>
+                            </div>
                         </div>
 
                     </div>
@@ -80,6 +87,11 @@
                     <div class="form-group">
                         <label class="font-weight-semibold" for="productColors">Mô tả ngắn</label>
                         <input type="text" class="form-control" asp-for="ShortContent">
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productBrand">Ảnh đại diện</label>
+                        <input name="fThumb" type="file" class="form-control-file" asp-for="Thumb" />
+                        <span asp-validation-for="Thumb" class="text-danger"></span>
                     </div>
                 </div>
             </div>

@@ -25,7 +25,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // GET: Admin/AdminAccounts
         public async Task<IActionResult> Index(int? page,int RolesID = 0)
         {
-            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "Description");
+            ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName");
 
             List<SelectListItem> listStatus = new List<SelectListItem>();
             listStatus.Add(new SelectListItem() {Text ="Hoạt động",Value="1"});
@@ -88,8 +88,10 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                account.CreatedDate = DateTime.Now;
                 _context.Add(account);
                 await _context.SaveChangesAsync();
+                _notyfService.Success("Tạo tài khoản thành công!");
                 return RedirectToAction(nameof(Index));
             }
             ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleId", account.RollId);
@@ -130,6 +132,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                 try
                 {
                     _context.Update(account);
+                    _notyfService.Success("Cập nhật thành công!");
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -176,6 +179,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             var account = await _context.Accounts.FindAsync(id);
             _context.Accounts.Remove(account);
             await _context.SaveChangesAsync();
+            _notyfService.Warning("Đã xóa tài khoản!");
             return RedirectToAction(nameof(Index));
         }
 

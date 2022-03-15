@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
 using PagedList.Core;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using BarBeeOrder.Helper;
+using System.IO;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -48,15 +50,15 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             List<Post> lsPosts = new List<Post>();
             if (Published == 1)
             {
-                lsPosts = _context.Posts.AsNoTracking().Where(x => x.Published == true).Include(p => p.Account).OrderByDescending(x => x.PostId).ToList();
+                lsPosts = _context.Posts.AsNoTracking().Where(x => x.Published == true && x.IsDelete==false).Include(p => p.Account).OrderByDescending(x => x.PostId).ToList();
             }
             else if (Published == 0)
             {
-                lsPosts = _context.Posts.AsNoTracking().Where(x => x.Published == false).Include(p => p.Account).OrderByDescending(x => x.PostId).ToList();
+                lsPosts = _context.Posts.AsNoTracking().Where(x => x.Published == false && x.IsDelete==false).Include(p => p.Account).OrderByDescending(x => x.PostId).ToList();
             }
             else
             {
-                lsPosts = _context.Posts.AsNoTracking().Include(p => p.Account).OrderByDescending(x => x.PostId).ToList();
+                lsPosts = _context.Posts.AsNoTracking().Where(x => x.IsDelete == false).Include(p => p.Account).OrderByDescending(x => x.PostId).ToList();
             }
 
             PagedList<Post> models = new PagedList<Post>(lsPosts.AsQueryable(), pageNumber, pageSize);
@@ -96,10 +98,23 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PostId,Tittle,ShortContent,PostContent,Published,CreatedDate,Author,AccountId,CategoryId,IsHot")] Post post)
+        public async Task<IActionResult> Create([Bind("PostId,Tittle,ShortContent,PostContent,Published,CreatedDate,Author,AccountId,CategoryId,IsHot,Thumb,IsDelete,IsNewfeed")] Post post, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
             if (ModelState.IsValid)
             {
+                post.CreatedDate = DateTime.Now;
+                post.IsDelete = false;
+                post.Alias = Utilities.SEOUrl(post.Tittle);
+                if (fThumb != null)
+                {
+                    string extension = Path.GetExtension(fThumb.FileName);
+                    string image = Utilities.SEOUrl(post.Tittle) + extension;
+                    post.Thumb = await Utilities.UploadFile(fThumb, @"posts", image.ToLower());
+                }
+                if (string.IsNullOrEmpty(post.Thumb))
+                {
+                    post.Thumb = "default.jpg";
+                }
                 _context.Add(post);
                 await _context.SaveChangesAsync();
                 _notyfService.Success("Tạo mới thành công!");
@@ -131,7 +146,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PostId,Tittle,ShortContent,PostContent,Published,CreatedDate,Author,AccountId,CategoryId,IsHot")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("PostId,Tittle,ShortContent,PostContent,Published,CreatedDate,Author,AccountId,CategoryId,IsHot,Thumb,IsDelete,IsNewfeed")] Post post, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
             if (id != post.PostId)
             {
@@ -140,6 +155,17 @@ namespace BarBeeOrder.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
+                if (fThumb != null)
+                {
+                    string extension = Path.GetExtension(fThumb.FileName);
+                    string image = Utilities.SEOUrl(post.Tittle) + extension;
+                    post.Thumb = await Utilities.UploadFile(fThumb, @"posts", image.ToLower());
+                }
+                if (string.IsNullOrEmpty(post.Thumb))
+                {
+                    post.Thumb = "default.jpg";
+                }
+                post.Alias = Utilities.SEOUrl(post.Tittle);
                 try
                 {
                     _context.Update(post);
@@ -188,7 +214,8 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var post = await _context.Posts.FindAsync(id);
-            _context.Posts.Remove(post);
+            post.IsDelete=true;
+            _context.Posts.Update(post);
             await _context.SaveChangesAsync();
             _notyfService.Warning("Xóa thành công!");
             return RedirectToAction(nameof(Index));
