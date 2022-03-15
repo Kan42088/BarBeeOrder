@@ -107,21 +107,13 @@ namespace BarBeeOrder.Models
             {
                 entity.ToTable("Category");
 
-                entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+                entity.Property(e => e.Cover).HasMaxLength(250);
 
-                entity.Property(e => e.Cover).HasMaxLength(500);
+                entity.Property(e => e.Name).HasMaxLength(250);
 
-                entity.Property(e => e.Description).HasMaxLength(500);
+                entity.Property(e => e.Thumb).HasMaxLength(250);
 
-                entity.Property(e => e.Name).HasMaxLength(50);
-
-                entity.Property(e => e.Ordering)
-                    .HasMaxLength(10)
-                    .IsFixedLength(true);
-
-                entity.Property(e => e.ParrentId).HasColumnName("ParrentID");
-
-                entity.Property(e => e.Title).HasMaxLength(50);
+                entity.Property(e => e.Title).HasMaxLength(250);
             });
 
             modelBuilder.Entity<Customer>(entity =>
@@ -241,17 +233,17 @@ namespace BarBeeOrder.Models
             {
                 entity.ToTable("Post");
 
-                entity.Property(e => e.PostId).HasColumnName("PostID");
+                entity.Property(e => e.Alias).HasMaxLength(250);
 
-                entity.Property(e => e.AccountId).HasColumnName("AccountID");
+                entity.Property(e => e.Author).HasMaxLength(250);
 
-                entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
-                entity.Property(e => e.CreatedDate)
-                    .HasMaxLength(10)
-                    .IsFixedLength(true);
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.ShortContent).HasMaxLength(250);
+
+                entity.Property(e => e.Thumb).HasMaxLength(250);
 
                 entity.Property(e => e.Tittle).HasMaxLength(250);
 
@@ -265,13 +257,7 @@ namespace BarBeeOrder.Models
             {
                 entity.ToTable("Product");
 
-                entity.Property(e => e.ProductId).HasColumnName("ProductID");
-
-                entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Description).HasMaxLength(500);
 
                 entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
 
@@ -283,11 +269,12 @@ namespace BarBeeOrder.Models
 
                 entity.Property(e => e.Tittle).HasMaxLength(250);
 
-                entity.Property(e => e.Video).HasMaxLength(250);
+                entity.Property(e => e.Video).HasMaxLength(500);
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.CategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Product_Category");
             });
 

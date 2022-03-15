@@ -34,10 +34,10 @@
                 </div>
             </div>
             <div class="col-lg-4 text-right">
-                <button class="btn btn-primary" asp-area="Admin" asp-controller="AdminAccounts" asp-action="Create">
+                <a class="btn btn-primary" asp-area="Admin" asp-controller="AdminAccounts" asp-action="Create">
                     <i class="anticon anticon-plus-circle m-r-5"></i>
                     <span>Tạo tài khoản</span>
-                </button>
+                </a>
             </div>
         </div>
         <div class="table-responsive">
@@ -72,7 +72,7 @@
                                 <td>@item.Email</td>
                                 <td>@item.Phone</td>
                                @* <td>@item.LastLogin</td>*@
-                                <td>@item.Roll.Description</td>
+                                <td>@item.Roll.RoleName</td>
                                 <td>
                                     @if (item.Status)
                                     {

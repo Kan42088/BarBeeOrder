@@ -24,6 +24,8 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             _notyfService = notyfService;
         }
 
+
+        // GET:  Admin/AdminProducts/Filter
         public IActionResult Filter(int CatID = 0, int page = 1)
         {
             
@@ -36,7 +38,6 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             {
                 if (true)
                 {
-
                 }
             }
             
@@ -52,11 +53,11 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             List<Product> lsProducts = new List<Product>();
             if (CatID!=0)
             {
-                lsProducts = _context.Products.AsNoTracking().Where(x => x.CategoryId == CatID).Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
+                lsProducts = _context.Products.AsNoTracking().Where(x => x.CategoryId == CatID && x.IsDelete == false).Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
             }
             else
             {
-                lsProducts = _context.Products.AsNoTracking().Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
+                lsProducts = _context.Products.AsNoTracking().Where(x => x.IsDelete == false).Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
             }
 
             PagedList<Product> models = new PagedList<Product>(lsProducts.AsQueryable(), pageNumber, pageSize);
@@ -220,7 +221,8 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Products.FindAsync(id);
-            _context.Products.Remove(product);
+            product.IsDelete =true;
+            _context.Products.Update(product);
             await _context.SaveChangesAsync();
             _notyfService.Warning("Xóa thành công!");
             return RedirectToAction(nameof(Index));
