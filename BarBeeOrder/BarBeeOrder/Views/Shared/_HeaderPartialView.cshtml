@@ -98,13 +98,13 @@
                                         </a>
                                     </li>
                                     <li>
+                                        <a asp-controller="Product" asp-action="Index">Cửa hàng</a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Blog" asp-action="Index">Tin tức</a>
+                                    </li>
+                                    <li>
                                         <a asp-controller="Home" asp-action="About">Về chúng tôi</a>
-                                    </li>
-                                    <li>
-                                        <a asp-controller="Product" asp-action="Index">Shop</a>
-                                    </li>
-                                    <li>
-                                        <a asp-controller="Blog" asp-action="Index">Blog</a>
                                     </li>
                                     <li>
                                         <a asp-controller="Home" asp-action="Contact">Liên hệ</a>
@@ -156,15 +156,11 @@
                                     </span>
                                 </a>
                             </li>
-                            <li>
-                                <a asp-controller="Home" asp-action="About">
-                                    <span class="mm-text">Về chúng tôi</span>
-                                </a>
-                            </li>
+                            
                             <li class="menu-item-has-children">
                                 <a href="#">
                                     <span class="mm-text">
-                                        Shop
+                                        Cửa hàng
                                         <i class="pe-7s-angle-down"></i>
                                     </span>
                                 </a>
@@ -311,7 +307,11 @@
                                     </li>
                                 </ul>
                             </li>
-
+                            <li>
+                                <a asp-controller="Home" asp-action="About">
+                                    <span class="mm-text">Về chúng tôi</span>
+                                </a>
+                            </li>
                             <li>
                                 <a asp-controller="Home" asp-action="Contact">
                                     <span class="mm-text">Liên hệ</span>
