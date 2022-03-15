@@ -14,5 +14,6 @@ namespace BarBeeOrder.Models
         public string Tittle { get; set; }
         public int? Ordering { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public bool IsHeader { get; set; }
     }
 }
