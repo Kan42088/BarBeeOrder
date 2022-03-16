@@ -1975,3 +1975,4 @@ C:\Users\Dat\Documents\GitHub\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Vie
 C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\Search\ListPageSearchPartial.cshtml.g.cs
 C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Blog\Details.cshtml.g.cs
 C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Page\Details.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Page\Details.cshtml.g.cs
