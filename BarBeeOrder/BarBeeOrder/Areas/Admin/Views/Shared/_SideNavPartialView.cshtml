@@ -17,7 +17,7 @@
                 <ul class="dropdown-menu">
 
                     <li class="active">
-                        <a href="index-e-commerce.html">E-commerce</a>
+                        <a href="/">E-commerce</a>
                     </li>
                 </ul>
             </li>
@@ -33,7 +33,7 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="app-chat.html">Danh sách đơn hàng</a>
+                        <a href="/">Danh sách đơn hàng</a>
                     </li>
                 </ul>
             </li>
@@ -57,23 +57,12 @@
                 </ul>
             </li>
             <li class="nav-item dropdown"> @*quan li khach hang*@
-                <a class="dropdown-toggle" href="javascript:void(0);">
+                <a asp-area="Admin" asp-controller="AdminCustomers" asp-action="Index">
                     <span class="icon-holder">
                         <i class="anticon anticon-hdd"></i>
                     </span>
                     <span class="title">Quản lí khách hàng </span>
-                    <span class="arrow">
-                        <i class="arrow-icon"></i>
-                    </span>
                 </a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a asp-area="Admin" asp-controller="AdminCustomers" asp-action="Index">Danh sách khách hàng</a>
-                    </li>
-                    <li>
-                        <a href="carousel.html">Tìm kiếm khách hàng</a>
-                    </li>
-                </ul>
             </li>
             <li class="nav-item dropdown"> @*Doanh so*@
                 <a class="dropdown-toggle" href="javascript:void(0);">
@@ -87,13 +76,13 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="form-elements.html">Form Elements</a>
+                        <a href="/">Doanh số 1</a>
                     </li>
                     <li>
-                        <a href="form-layouts.html">Form Layouts</a>
+                        <a href="/">Doanh số 2</a>
                     </li>
                     <li>
-                        <a href="form-validation.html">Form Validation</a>
+                        <a href="/">Doanh số 3</a>
                     </li>
                 </ul>
             </li>
@@ -112,7 +101,7 @@
                         <a asp-area="Admin" asp-controller="AdminAccounts" asp-action="Index">Quản lí tài khoản quản trị</a>
                     </li>
                     <li>
-                        <a href="data-table.html">Quản lí danh mục</a>
+                        <a href="data-table.html">Quản lí danh mục bài đăng</a>
                     </li>
                     <li>
                         <a asp-area="Admin" asp-controller="AdminRoles" asp-action="Index">Quản lí quyền truy cập</a>
@@ -120,20 +109,12 @@
                 </ul>
             </li>
             <li class="nav-item dropdown"> @*quan li tin tuc*@
-                <a class="dropdown-toggle" href="javascript:void(0);">
+                <a asp-area="Admin" asp-controller="AdminPosts" asp-action="Index">
                     <span class="icon-holder">
                         <i class="anticon anticon-pie-chart"></i>
                     </span>
                     <span class="title">Quản lí tin tức</span>
-                    <span class="arrow">
-                        <i class="arrow-icon"></i>
-                    </span>
                 </a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a asp-area="Admin" asp-controller="AdminPosts" asp-action="Index">Danh sách bài đăng</a>
-                    </li>
-                </ul>
             </li>
             <li class="nav-item "> @*quan li trang*@
                 <a asp-area="Admin" asp-controller="AdminPages" asp-action="Index">

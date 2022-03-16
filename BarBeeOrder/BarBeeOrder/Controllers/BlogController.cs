@@ -20,19 +20,22 @@ namespace BarBeeOrder.Controllers
         }
 
         // GET: BlogController/Index
-        [Route("blogs.html", Name ="Blog")]
+        [Route("tin-tuc.html", Name ="Blog")]
         public async Task<IActionResult> Index(int? page)
         {
             var pageNumber = page ?? 1;
             var pageSize = 6; //Show 5 rows every time
 
+            List<Page> pages = new List<Page>();
+            pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuPages"] = pages;
 
             List<Post> lsPosts = new List<Post>();
             lsPosts = _context.Posts.AsNoTracking().Where(x => x.Published == true && x.IsDelete ==false).Include(p => p.Account).OrderByDescending(x => x.PostId).ToList();
             PagedList<Post> models = new PagedList<Post>(lsPosts.AsQueryable(), pageNumber, pageSize);
             ViewBag.CurrentPage = pageNumber;
             List<Post> newsfeeds = new List<Post>();
-            newsfeeds = _context.Posts.AsNoTracking().Where(x => x.Published == true && x.IsDelete==false && x.IsNewfeed==true).Include(p => p.Account).OrderByDescending(x => x.PostId).Take(3).ToList();
+            newsfeeds = _context.Posts.AsNoTracking().Where(x => x.Published == true && x.IsDelete==false && x.IsHot==true).Include(p => p.Account).OrderByDescending(x => x.PostId).Take(3).ToList();
             ViewBag.NewsFeeds = newsfeeds;
             return View(models);
         }
@@ -41,6 +44,9 @@ namespace BarBeeOrder.Controllers
         [Route("/tin-tuc/{Alias}-{id}.html", Name = "BlogDetails")]
         public async Task<IActionResult> Details(int? id)
         {
+            List<Page> pages = new List<Page>();
+            pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuPages"] = pages;
             if (id == null)
             {
                 return NotFound();

@@ -1,11 +1,8 @@
-﻿
-@using X.PagedList.Mvc.Core;
-@using X.PagedList;
-@using X.PagedList.Mvc.Core.Fluent;
+﻿@using PagedList.Core;
 @model IPagedList<BarBeeOrder.Models.Category>
 @{
     int CurrentPage = ViewBag.CurrentPage;
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh sách danh mục sản phẩm";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -90,12 +87,11 @@
                     }
                 </tbody>
             </table>
-            @*<div aria-label="Page">
+            <div aria-label="Page navigation example">
                 <ul class="pagination">
-                <pager  class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminCustomers" asp-action="Index"/>
+                    <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminCategories" asp-action="Index" />
                 </ul>
-                </div>*@
-            @Html.PagedListPager( Model, page => Url.Action("Index", new { page}) )
+            </div>
         </div>
     </div>
 </div>
