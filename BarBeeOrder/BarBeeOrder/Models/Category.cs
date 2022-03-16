@@ -24,6 +24,7 @@ namespace BarBeeOrder.Models
         public string Thumb { get; set; }
         public bool IsDeleted { get; set; }
         public int? Type { get; set; }
+        public string Alias { get; set; }
 
         public virtual ICollection<Product> Products { get; set; }
     }

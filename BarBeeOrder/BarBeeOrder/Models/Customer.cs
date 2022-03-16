@@ -23,6 +23,8 @@ namespace BarBeeOrder.Models
         public bool Status { get; set; }
         public DateTime? LastLogin { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public bool IsDeteted { get; set; }
+        public string Salt { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
     }
