@@ -27,6 +27,9 @@ namespace BarBeeOrder.Controllers
             List<Page> pages = new List<Page>();
             pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader ==true && p.Published == true).OrderBy(x=> x.Ordering).ToList();
             ViewData["MenuPages"] = pages;
+            List<Category> categories = new List<Category>();
+            categories = _context.Categories.AsNoTracking().Where(c => c.IsDeleted == false && c.Published == true).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuCategories"] = categories;
 
             List<Post> newsfeeds = new List<Post>();
             newsfeeds = _context.Posts.AsNoTracking().Where(x => x.Published == true && x.IsDelete == false && x.IsNewfeed == true).Include(p => p.Account).OrderByDescending(x => x.PostId).Take(3).ToList();
@@ -54,6 +57,9 @@ namespace BarBeeOrder.Controllers
             List<Page> pages = new List<Page>();
             pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
             ViewData["MenuPages"] = pages;
+            List<Category> categories = new List<Category>();
+            categories = _context.Categories.AsNoTracking().Where(c => c.IsDeleted == false && c.Published == true).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuCategories"] = categories;
             return View();
         }
         public IActionResult About()
@@ -61,6 +67,9 @@ namespace BarBeeOrder.Controllers
             List<Page> pages = new List<Page>();
             pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
             ViewData["MenuPages"] = pages;
+            List<Category> categories = new List<Category>();
+            categories = _context.Categories.AsNoTracking().Where(c => c.IsDeleted == false && c.Published == true).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuCategories"] = categories;
             return View();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
