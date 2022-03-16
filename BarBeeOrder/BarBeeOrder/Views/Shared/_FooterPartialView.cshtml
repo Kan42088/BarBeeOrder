@@ -44,11 +44,14 @@
                             <li>
                                 <a asp-action="Index" asp-controller="Blog">Tin tức</a>
                             </li>
-                            @foreach (var item in (List<Page>)ViewData["MenuPages"])
+                            @if ((List<Page>)ViewData["MenuPages"] != null)
                             {
-                                <li>
-                                    <a asp-action="Details" asp-controller="Page" asp-route-id="@item.PageId">@item.PageName</a>
-                                </li>
+                                foreach (var item in (List<Page>)ViewData["MenuPages"])
+                                {
+                                    <li>
+                                        <a asp-action="Details" asp-controller="Page" asp-route-id="@item.PageId">@item.PageName</a>
+                                    </li>
+                                }
                             }
                         </ul>
                     </div>
