@@ -26,51 +26,57 @@ namespace BarBeeOrder.Controllers
             try
             {
                 var pageNumber = page ?? 1;
-                var pageSize = 6; //Show 6 rows every time
-
-                
+                var pageSize = 9; //Show 6 rows every time
 
                 List<Product> lsProducts = new List<Product>();
                 lsProducts = _context.Products.AsNoTracking().Where(x => x.Active == true && x.IsDelete == false).Include(p => p.Category).OrderByDescending(x => x.ProductId).ToList();
                 PagedList<Product> models = new PagedList<Product>(lsProducts.AsQueryable(), pageNumber, pageSize);
                 ViewBag.CurrentPage = pageNumber;
 
+                var lsBestSells = _context.Products.AsNoTracking().Where(x => x.BestSellers==true && x.IsDelete == false && x.Active == true).Take(4).ToList().OrderBy(x => x.CreatedDate).ToList();
+                ViewBag.BestSells = lsBestSells;
+
                 return View(models);
             }
             catch
             {
                 return RedirectToAction("Index", "Home");
             }
-            
+
         }
-        [Route("/{Alias}-{id}.html", Name = "ListProduct")]
-        public IActionResult List(int id, int page=1)
+        [Route("/cua-hang-{Alias}", Name = "ListProduct")]
+        public IActionResult List(string alias, int page = 1)
         {
             List<Page> pages = new List<Page>();
             pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
             ViewData["MenuPages"] = pages;
+
             try
             {
-                var pageSize = 6; //Show 6 rows every time
+                var pageSize = 9; //Show 6 rows every time
+                var danhmuc = _context.Categories.AsNoTracking().SingleOrDefault(x => x.Alias == alias);
                 List<Product> lsProducts = new List<Product>();
-                lsProducts = _context.Products.AsNoTracking().Where(x =>x.CategoryId==id && x.Active == true && x.IsDelete == false).Include(p => p.Category).OrderByDescending(x => x.CreatedDate).ToList();
+                lsProducts = _context.Products.AsNoTracking().Where(x => x.CategoryId == danhmuc.CategoryId && x.Active == true && x.IsDelete == false).Include(p => p.Category).OrderByDescending(x => x.CreatedDate).ToList();
                 PagedList<Product> models = new PagedList<Product>(lsProducts.AsQueryable(), page, pageSize);
                 ViewBag.CurrentPage = page;
-                ViewBag.CurrentCat = _context.Categories.Find(id);
+                ViewBag.CurrentCat = danhmuc;
                 return View(models);
             }
             catch
             {
                 return RedirectToAction("Index", "Home");
             }
-            
+
         }
-        [Route("/{Alias}-{id}.html", Name = "ProductDetails")]
+
+
+        [Route("/cua-hang/{Alias}-{id}.html", Name = "ProductDetails")]
         public IActionResult Details(int id)
         {
             List<Page> pages = new List<Page>();
             pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
             ViewData["MenuPages"] = pages;
+
             try
             {
                 var product = _context.Products.Include(x => x.Category).FirstOrDefault(x => x.ProductId == id);
@@ -78,14 +84,18 @@ namespace BarBeeOrder.Controllers
                 {
                     return RedirectToAction("Index");
                 }
+
+                var lsProducts = _context.Products.AsNoTracking().Where(x => x.CategoryId == product.CategoryId && x.ProductId != id && x.IsDelete == false && x.Active == true).Take(4).ToList().OrderBy(x=>x.CreatedDate).ToList();
+                ViewBag.SanPham = lsProducts;
+
                 return View(product);
             }
             catch
             {
                 return RedirectToAction("Index", "Home");
             }
-            
-            
+
+
         }
     }
 }

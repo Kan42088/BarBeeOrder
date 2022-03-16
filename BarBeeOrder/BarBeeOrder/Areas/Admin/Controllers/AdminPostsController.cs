@@ -39,6 +39,25 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // GET: Admin/AdminPosts
         public async Task<IActionResult> Index(int? page,int Published=-1)
         {
+            ////Ctrl + K +U
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    Post post = new Post();
+            //    post.CreatedDate = DateTime.Now;
+            //    post.ModifiedDate = DateTime.Now;
+            //    post.Alias = Utilities.SEOUrl("title" + i);
+            //    post.AccountId = 2;
+            //    post.Published = true;
+            //    post.PostContent = "noi dung bai viet" + i;
+            //    post.ShortContent = "noi dung ngan" + i;
+            //    post.Thumb = "default.jpg";
+            //    post.Tittle = "title" + i;
+            //    post.IsNewfeed = true;
+            //    _context.Add(post);
+            //    await _context.SaveChangesAsync();
+            //}
+
+
             var pageNumber = page ?? 1;
             var pageSize = 5; //Show 5 rows every time
 

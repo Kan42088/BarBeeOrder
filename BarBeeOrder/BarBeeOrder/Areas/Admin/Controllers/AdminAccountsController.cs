@@ -21,14 +21,14 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             _context = context;
             _notyfService = notyfService;
         }
-        //stack change
+
         // GET: Admin/AdminAccounts
-        public async Task<IActionResult> Index(int? page,int RolesID = 0)
+        public async Task<IActionResult> Index(int? page, int RolesID = 0)
         {
             ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName");
 
             List<SelectListItem> listStatus = new List<SelectListItem>();
-            listStatus.Add(new SelectListItem() {Text ="Hoạt động",Value="1"});
+            listStatus.Add(new SelectListItem() { Text = "Hoạt động", Value = "1" });
             listStatus.Add(new SelectListItem() { Text = "Không hoạt động", Value = "0" });
             ViewData["TrangThai"] = listStatus;
 
@@ -38,11 +38,11 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             List<Account> lsAccounts = new List<Account>();
             if (RolesID != 0)
             {
-                lsAccounts = _context.Accounts.AsNoTracking().Where(x => x.RollId == RolesID).Include(c => c.Roll).OrderByDescending(x => x.AccountId).ToList();
+                lsAccounts = _context.Accounts.AsNoTracking().Where(x => x.RollId == RolesID && x.IsDelete == false).Include(c => c.Roll).OrderByDescending(x => x.AccountId).ToList();
             }
             else
             {
-                lsAccounts = _context.Accounts.AsNoTracking().Include(c => c.Roll).OrderByDescending(x => x.AccountId).ToList();
+                lsAccounts = _context.Accounts.AsNoTracking().Where(x => x.IsDelete == false).Include(c => c.Roll).OrderByDescending(x => x.AccountId).ToList();
             }
 
             PagedList<Account> models = new PagedList<Account>(lsAccounts.AsQueryable(), pageNumber, pageSize);
@@ -76,6 +76,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         public IActionResult Create()
         {
             ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleName");
+            ViewBag.RollId = new SelectList(_context.Roles, "RoleId", "RoleName");
             return View();
         }
 
@@ -89,6 +90,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 account.CreatedDate = DateTime.Now;
+                account.IsDelete = false;
                 _context.Add(account);
                 await _context.SaveChangesAsync();
                 _notyfService.Success("Tạo tài khoản thành công!");
@@ -177,7 +179,8 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var account = await _context.Accounts.FindAsync(id);
-            _context.Accounts.Remove(account);
+            account.IsDelete = true;
+            _context.Update(account);
             await _context.SaveChangesAsync();
             _notyfService.Warning("Đã xóa tài khoản!");
             return RedirectToAction(nameof(Index));
