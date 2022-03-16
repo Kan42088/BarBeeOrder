@@ -67,6 +67,10 @@ namespace BarBeeOrder.Models
 
                 entity.Property(e => e.RollId).HasColumnName("RollID");
 
+                entity.Property(e => e.Salt)
+                    .HasMaxLength(10)
+                    .IsFixedLength(true);
+
                 entity.HasOne(d => d.Roll)
                     .WithMany(p => p.Accounts)
                     .HasForeignKey(d => d.RollId)
@@ -107,6 +111,8 @@ namespace BarBeeOrder.Models
             {
                 entity.ToTable("Category");
 
+                entity.Property(e => e.Alias).HasMaxLength(250);
+
                 entity.Property(e => e.Cover).HasMaxLength(250);
 
                 entity.Property(e => e.Name).HasMaxLength(250);
@@ -141,6 +147,10 @@ namespace BarBeeOrder.Models
                 entity.Property(e => e.Phone)
                     .HasMaxLength(12)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Salt)
+                    .HasMaxLength(8)
+                    .IsFixedLength(true);
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -211,9 +221,13 @@ namespace BarBeeOrder.Models
             {
                 entity.ToTable("Page");
 
+                entity.Property(e => e.Alias).HasMaxLength(250);
+
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.PageName).HasMaxLength(100);
+
+                entity.Property(e => e.Thumb).HasMaxLength(250);
 
                 entity.Property(e => e.Tittle).HasMaxLength(250);
             });
@@ -256,6 +270,8 @@ namespace BarBeeOrder.Models
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.ToTable("Product");
+
+                entity.Property(e => e.Alias).HasMaxLength(255);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 

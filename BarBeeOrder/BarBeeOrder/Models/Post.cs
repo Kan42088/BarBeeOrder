@@ -22,6 +22,7 @@ namespace BarBeeOrder.Models
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string Alias { get; set; }
+        public int? Views { get; set; }
 
         public virtual Account Account { get; set; }
     }

@@ -29,6 +29,7 @@ namespace BarBeeOrder.Models
         public bool Active { get; set; }
         public bool HomeFlag { get; set; }
         public bool IsDelete { get; set; }
+        public string Alias { get; set; }
 
         public virtual Category Category { get; set; }
         public virtual ICollection<AttributePrice> AttributePrices { get; set; }

@@ -21,6 +21,8 @@ namespace BarBeeOrder.Models
         public int? RollId { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastLogin { get; set; }
+        public string Salt { get; set; }
+        public bool IsDelete { get; set; }
 
         public virtual Role Roll { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
