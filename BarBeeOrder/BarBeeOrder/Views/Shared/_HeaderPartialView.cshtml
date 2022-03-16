@@ -104,16 +104,20 @@
                                     <li>
                                         <a asp-controller="Blog" asp-action="Index">Tin tức</a>
                                     </li>
-                                    @foreach (var item in (List<Page>)ViewData["MenuPages"])
+                                    @if ((List<Page>)ViewData["MenuPages"] != null)
                                     {
-                                        if (item.IsHeader)
+                                        foreach (var item in (List<Page>)ViewData["MenuPages"])
                                         {
-                                            <li>
-                                                <a asp-controller="Page" asp-action="Details" asp-route-id="@item.PageId">@item.PageName</a>
-                                            </li>
-                                        }
+                                            if (item.IsHeader)
+                                            {
+                                                <li>
+                                                    <a asp-controller="Page" asp-action="Details" asp-route-id="@item.PageId">@item.PageName</a>
+                                                </li>
+                                            }
 
+                                        }
                                     }
+
                                 </ul>
                             </nav>
                         </div>
