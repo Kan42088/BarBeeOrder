@@ -41,7 +41,7 @@ namespace BarBeeOrder.Controllers
         }
 
         // GET: BlogController/Details/5
-        [Route("/tin-tuc/{Alias}-{id}.html", Name = "BlogDetails")]
+        [Route("/tin-tuc/{Alias}-{id}.html", Name = "BlogDetails")] 
         public async Task<IActionResult> Details(int? id)
         {
             List<Page> pages = new List<Page>();

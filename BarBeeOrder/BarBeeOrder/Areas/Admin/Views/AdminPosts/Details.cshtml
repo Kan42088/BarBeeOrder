@@ -17,7 +17,7 @@
 
 <div class="card">
     <div class="card-body">
-        <h4 class="card-title">Thông tin sản phẩm</h4>
+        <h4 class="card-title">Thông tin bài đăng</h4>
         <div class="table-responsive">
             <table class="product-info-table m-t-20">
                 <tbody>
@@ -31,7 +31,7 @@
                     </tr>
                     <tr>
                         <td>Tác giả:</td>
-                        <td>@Model.Account.Fullname</td>
+                        <td>@if(Model.Account!=null){<p>@Model.Account.Fullname</p>}else{<p>Ẩn danh</p>}</td>
                     </tr>
                     <tr>
                         <td>Mô tả ngắn:</td>
@@ -69,6 +69,7 @@
                     <tr>
                         <td>Nội dung:</td>
                         <td>@Html.Raw(@Model.PostContent)</td>
+                        
                     </tr>
 
                 </tbody>

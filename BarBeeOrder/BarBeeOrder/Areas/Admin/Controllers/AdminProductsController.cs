@@ -28,7 +28,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // GET:  Admin/AdminProducts/Filter
         public IActionResult Filter(int CatID = 0, int page = 1)
         {
-            
+
             var url = $"/Admin/AdminProducts?CatID={CatID}&page={page}";
             if (CatID == 0)
             {
@@ -40,18 +40,51 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                 {
                 }
             }
-            
+
             return Json(new { status = "success", redirectUrl = url });
         }
 
         // GET: Admin/AdminProducts
         public async Task<IActionResult> Index(int? page, int CatID = 0)
         {
+            //for (int i = 0; i < 5; i++)
+            //{
+            //   Product product = new Product();
+            //    product.ProductName = "Quả" + i;
+            //    product.Alias = Utilities.SEOUrl("Quả" + i);
+            //    product.Thumb = "default.jpg";
+            //    product.Price = i * 10000;
+            //    product.IsDelete = false;
+            //    product.Active = true;
+            //    product.HomeFlag = true;
+            //    product.BestSellers = true;
+            //    product.CategoryId = 1;
+            //    product.CreatedDate = DateTime.Now;
+            //    _context.Add(product);
+            //    await _context.SaveChangesAsync();
+            //}
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    Product product = new Product();
+            //    product.ProductName = "Gạo" + i;
+            //    product.Alias = Utilities.SEOUrl("Quả" + i);
+            //    product.Thumb = "default.jpg";
+            //    product.Price = i * 10000;
+            //    product.IsDelete = false;
+            //    product.Active = true;
+            //    product.HomeFlag = true;
+            //    product.BestSellers = true;
+            //    product.CategoryId = 2;
+            //    product.CreatedDate = DateTime.Now;
+            //    _context.Add(product);
+            //    await _context.SaveChangesAsync();
+            //}
+
             var pageNumber = page ?? 1;
             var pageSize = 5; //Show 5 rows every time
 
             List<Product> lsProducts = new List<Product>();
-            if (CatID!=0)
+            if (CatID != 0)
             {
                 lsProducts = _context.Products.AsNoTracking().Where(x => x.CategoryId == CatID && x.IsDelete == false).Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
             }
@@ -63,8 +96,8 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             PagedList<Product> models = new PagedList<Product>(lsProducts.AsQueryable(), pageNumber, pageSize);
             ViewBag.CurrentCateID = CatID;
             ViewBag.CurrentPage = pageNumber;
-            ViewData["DanhMuc"] = new SelectList(_context.Categories.Where(x=> x.IsDeleted==false && x.Type==1), "CategoryId", "Name", CatID);
-            
+            ViewData["DanhMuc"] = new SelectList(_context.Categories.Where(x => x.IsDeleted == false && x.Type == 1), "CategoryId", "Name", CatID);
+
             //var models = lsProducts.AsQueryable().ToPagedList(pageNumber, pageSize);
 
             return View(models);
@@ -90,7 +123,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminProducts/Create
-        public IActionResult Create()   
+        public IActionResult Create()
         {
             ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name");
             return View();
@@ -101,11 +134,12 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,ProductName,ShortDescription,CategoryId,Description,Price,Discount,Video,CreatedDate,ModifiedDate,Tittle,BestSellers,Active,HomeFlag")] Product product,Microsoft.AspNetCore.Http.IFormFile fThumb)
+        public async Task<IActionResult> Create([Bind("ProductId,ProductName,ShortDescription,CategoryId,Description,Price,Discount,Video,CreatedDate,ModifiedDate,Tittle,BestSellers,Active,HomeFlag")] Product product, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
             if (ModelState.IsValid)
             {
                 product.ProductName = Utilities.ToTitleCase(product.ProductName);
+                product.Alias = Utilities.SEOUrl(product.ProductName);
                 if (fThumb != null)
                 {
                     string extension = Path.GetExtension(fThumb.FileName);
@@ -162,6 +196,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                 try
                 {
                     product.ProductName = Utilities.ToTitleCase(product.ProductName);
+                    product.Alias = Utilities.SEOUrl(product.ProductName);
                     if (fThumb != null)
                     {
                         string extension = Path.GetExtension(fThumb.FileName);
@@ -221,7 +256,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Products.FindAsync(id);
-            product.IsDelete =true;
+            product.IsDelete = true;
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
             _notyfService.Warning("Xóa thành công!");
