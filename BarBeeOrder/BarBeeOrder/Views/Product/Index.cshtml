@@ -56,7 +56,18 @@
                             </div>
                             </div>
                             </div>*@
-
+                        <div class="widgets-area mb-9">
+                            <h2 class="widgets-title mb-5">Danh mục sản phẩm</h2>
+                            @if ((List<Category>)ViewData["MenuCategories"] != null)
+                            {
+                                foreach (var item in (List<Category>)ViewData["MenuCategories"])
+                                {
+                                    string url = $"/cua-hang-{@item.Alias}";
+                                    <a href="@url">@item.Name</a>
+                                    <hr />
+                                }
+                            }
+                        </div>
                         <div class="widgets-area mb-9">
                             <h2 class="widgets-title mb-5">Top sản phẩm bán chạy</h2>
                             <div class="widgets-item">
@@ -64,8 +75,9 @@
                                     <div class="swiper-wrapper">
                                         @if ((List<Product>)ViewBag.BestSells != null)
                                         {
-                                            foreach (var item in (List<Product>)ViewBag.BestSells){
-                                                string url =$"/cua-hang/{item.Alias}-{item.ProductId}.html";
+                                            foreach (var item in (List<Product>)ViewBag.BestSells)
+                                            {
+                                                string url = $"/cua-hang/{item.Alias}-{item.ProductId}.html";
                                                 <div class="swiper-slide">
                                                     <div class="product-list-item">
                                                         <div class="product-img img-zoom-effect">
@@ -237,7 +249,7 @@
                     </div>
                     <div class="pagination-area pt-10">
                         <ul class="pagination justify-content-center">
-                            <pager class="pager-container" options="@PagedListRenderOptions.Bootstrap4PageNumbersOnly" list="@Model" asp-area="" asp-controller="Product" asp-action="Index" />
+                            <pager class="pager-container" options="@PagedListRenderOptions.Bootstrap4PageNumbersOnly" list="@Model" asp-area="" asp-controller="Product" asp-route-keyword="@ViewBag.Keyword" asp-action="Index" />
                         </ul>
                     </div>
                 </div>

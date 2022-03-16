@@ -18,24 +18,35 @@ namespace BarBeeOrder.Controllers
         }
 
         [Route("cua-hang.html", Name = "Product")]
-        public IActionResult Index(int? page)
+        public IActionResult Index(int? page,string? keyword)
         {
             List<Page> pages = new List<Page>();
             pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
             ViewData["MenuPages"] = pages;
+            List<Category> categories = new List<Category>();
+            categories = _context.Categories.AsNoTracking().Where(c => c.IsDeleted == false && c.Published == true).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuCategories"] = categories;
+
             try
             {
                 var pageNumber = page ?? 1;
                 var pageSize = 9; //Show 6 rows every time
 
                 List<Product> lsProducts = new List<Product>();
-                lsProducts = _context.Products.AsNoTracking().Where(x => x.Active == true && x.IsDelete == false).Include(p => p.Category).OrderByDescending(x => x.ProductId).ToList();
+                
+                if (string.IsNullOrEmpty(keyword)){
+                    lsProducts = _context.Products.AsNoTracking().Where(x => x.Active == true && x.IsDelete == false).Include(p => p.Category).OrderByDescending(x => x.ProductId).ToList();
+                }
+                else
+                {
+                    lsProducts = _context.Products.AsNoTracking().Where(x => x.Active == true && x.IsDelete == false && x.ProductName.Contains(keyword)).Include(p => p.Category).OrderByDescending(x => x.ProductId).ToList();
+                }
                 PagedList<Product> models = new PagedList<Product>(lsProducts.AsQueryable(), pageNumber, pageSize);
+                
                 ViewBag.CurrentPage = pageNumber;
-
                 var lsBestSells = _context.Products.AsNoTracking().Where(x => x.BestSellers==true && x.IsDelete == false && x.Active == true).Take(4).ToList().OrderBy(x => x.CreatedDate).ToList();
                 ViewBag.BestSells = lsBestSells;
-
+                ViewBag.Keyword = keyword;
                 return View(models);
             }
             catch
@@ -50,6 +61,9 @@ namespace BarBeeOrder.Controllers
             List<Page> pages = new List<Page>();
             pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
             ViewData["MenuPages"] = pages;
+            List<Category> categories = new List<Category>();
+            categories = _context.Categories.AsNoTracking().Where(c => c.IsDeleted == false && c.Published == true).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuCategories"] = categories;
 
             try
             {
@@ -58,6 +72,8 @@ namespace BarBeeOrder.Controllers
                 List<Product> lsProducts = new List<Product>();
                 lsProducts = _context.Products.AsNoTracking().Where(x => x.CategoryId == danhmuc.CategoryId && x.Active == true && x.IsDelete == false).Include(p => p.Category).OrderByDescending(x => x.CreatedDate).ToList();
                 PagedList<Product> models = new PagedList<Product>(lsProducts.AsQueryable(), page, pageSize);
+                var lsBestSells = _context.Products.AsNoTracking().Where(x => x.BestSellers == true && x.IsDelete == false && x.Active == true).Take(4).ToList().OrderBy(x => x.CreatedDate).ToList();
+                ViewBag.BestSells = lsBestSells;
                 ViewBag.CurrentPage = page;
                 ViewBag.CurrentCat = danhmuc;
                 return View(models);
@@ -76,6 +92,9 @@ namespace BarBeeOrder.Controllers
             List<Page> pages = new List<Page>();
             pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
             ViewData["MenuPages"] = pages;
+            List<Category> categories = new List<Category>();
+            categories = _context.Categories.AsNoTracking().Where(c => c.IsDeleted == false && c.Published == true).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuCategories"] = categories;
 
             try
             {

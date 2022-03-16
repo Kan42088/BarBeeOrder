@@ -1977,3 +1977,6 @@ C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5
 C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Page\Details.cshtml.g.cs
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Page\Details.cshtml.g.cs
 C:\Users\Duc\Documents\GitHub\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Product\List.cshtml.g.cs
+C:\Users\Huy\Documents\GitHub\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Blog\Details.cshtml.g.cs
+C:\Users\Huy\Documents\GitHub\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Page\Details.cshtml.g.cs
+C:\Users\Huy\Documents\GitHub\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Product\List.cshtml.g.cs

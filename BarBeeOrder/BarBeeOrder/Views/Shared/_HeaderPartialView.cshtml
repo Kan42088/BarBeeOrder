@@ -33,16 +33,18 @@
                             <img src="~/assets/images/logo/dark.png" alt="Header Logo">
                         </a>
                         <div class="header-search-area d-none d-lg-block">
-                            <form action="#" class="header-searchbox">
+                            <form asp-action="Index" asp-controller="Product" method="get" class="header-searchbox">
                                 <select class="nice-select select-search-category wide">
-                                    <option value="all">All Category</option>
-                                    <option value="product-item">Product Item</option>
-                                    <option value="product-item-2">Product Item 02</option>
-                                    <option value="product-item-3">Product Item 03</option>
-                                    <option value="product-item-4">Product Item 04</option>
-                                    <option value="product-item-5">Product Item 05</option>
+                                    <option value="all">Tất cả danh mục</option>
+                                    @if((List<Category>)ViewData["MenuCategories"] != null)
+                                    {
+                                        foreach(var item in (List<Category>)ViewData["MenuCategories"])
+                                        {
+                                            <option value="@item.CategoryId">@item.Name</option>
+                                        }
+                                    }
                                 </select>
-                                <input class="input-field" type="text" placeholder="Tìm kiếm sản phẩm">
+                                <input class="input-field" name="keyword" type="text" placeholder="Tìm kiếm sản phẩm">
                                 <button class="btn btn-outline-whisper btn-primary-hover" type="submit"><i class="pe-7s-search"></i></button>
                             </form>
                         </div>
