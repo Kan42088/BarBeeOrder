@@ -121,6 +121,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                post.AccountId = 2;
                 post.CreatedDate = DateTime.Now;
                 post.IsDelete = false;
                 post.Alias = Utilities.SEOUrl(post.Tittle);
@@ -188,8 +189,8 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                 try
                 {
                     _context.Update(post);
-                    _notyfService.Success("Chỉnh sửa thành công!");
                     await _context.SaveChangesAsync();
+                    _notyfService.Success("Chỉnh sửa thành công!");
                 }
                 catch (DbUpdateConcurrencyException)
                 {

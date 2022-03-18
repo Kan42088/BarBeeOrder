@@ -1,6 +1,7 @@
 using AspNetCoreHero.ToastNotification;
 using BarBeeOrder.Models;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,15 @@ namespace BarBeeOrder
             string stringConnnectDb = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<BarBeeOrderContext>(option => option.UseSqlServer(stringConnnectDb));
             services.AddNotyf(config => { config.DurationInSeconds = 5;config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
+            services.AddSession();
 
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(
+                p=>
+                {
+                    p.LoginPath = "/dang-nhap.html";
+                    p.AccessDeniedPath = "/";
+                });
             services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] {UnicodeRanges.All}));
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
@@ -52,9 +61,9 @@ namespace BarBeeOrder
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseSession();
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
