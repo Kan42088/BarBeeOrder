@@ -169,6 +169,8 @@ namespace BarBeeOrder.Models
 
                 entity.Property(e => e.PaymentId).HasColumnName("PaymentID");
 
+                entity.Property(e => e.ShipDate).HasColumnType("datetime");
+
                 entity.Property(e => e.Suid).HasColumnName("SUID");
 
                 entity.Property(e => e.TransactionStatusId).HasColumnName("TransactionStatusID");
@@ -200,11 +202,11 @@ namespace BarBeeOrder.Models
 
                 entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
 
+                entity.Property(e => e.CreateDate).HasColumnType("datetime");
+
                 entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
                 entity.Property(e => e.ProductId).HasColumnName("ProductID");
-
-                entity.Property(e => e.ShippingDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)

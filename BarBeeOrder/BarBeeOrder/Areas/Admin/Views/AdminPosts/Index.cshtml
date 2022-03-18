@@ -15,6 +15,7 @@
         </nav>
     </div>
 </div>
+
 <div class="card">
     <div class="card-body">
         <div class="row m-b-30">
@@ -65,7 +66,7 @@
                                 </td>
                                 <td>@if (item.Account != null)
                                     {
-                                        <p>item.Account.Fullname</p>
+                                        <p>@item.Account.Fullname</p>
                                         
                                     }else{
                                         <p>Ẩn danh</p>
@@ -103,6 +104,8 @@
         </div>
     </div>
 </div>
+
+
 @section Scripts{
 <script>
         $(document).ready(function(){
