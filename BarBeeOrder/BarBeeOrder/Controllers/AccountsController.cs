@@ -22,6 +22,11 @@ namespace BarBeeOrder.Controllers
         private readonly BarBeeOrderContext _context;
         public INotyfService _notyfService { get; }
 
+        public AccountsController(BarBeeOrderContext context, INotyfService notyfService)
+        {
+            _context = context;
+            _notyfService = notyfService;
+        }
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ValidatePhone(string phone)
@@ -60,11 +65,7 @@ namespace BarBeeOrder.Controllers
             }
         }
 
-        public AccountsController(BarBeeOrderContext context, INotyfService notyfService)
-        {
-            _context = context;
-            _notyfService = notyfService;
-        }
+        
 
         [Route("tai-khoan-cua-toi.html", Name = "Dashboard")]
         public IActionResult Dashboard()
@@ -72,10 +73,10 @@ namespace BarBeeOrder.Controllers
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
             if (taikhoanID != null)
             {
-                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x=> x.CustomerId==Convert.ToInt32(taikhoanID));
-                if (khachhang!=null)
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
                 {
-                    var lsOrder = _context.Orders.AsNoTracking().Where(x=> x.CustomerId ==khachhang.CustomerId).Include(x=> x.TransactionStatus).OrderBy(x => x.OrderDate).ToList();
+                    var lsOrder = _context.Orders.AsNoTracking().Where(x => x.CustomerId == khachhang.CustomerId).Include(x => x.TransactionStatus).OrderBy(x => x.OrderDate).ToList();
                     ViewBag.lsOrder = lsOrder;
                     return View(khachhang);
                 }
@@ -107,9 +108,10 @@ namespace BarBeeOrder.Controllers
                         Fullname = taikhoan.FullName,
                         Phone = taikhoan.Phone,
                         Email = taikhoan.Email,
-                        Password = (taikhoan.Password+salt.Trim()).ToMD5(),
+                        Password = (taikhoan.Password + salt.Trim()).ToMD5(),
                         Status = true,
                         Salt = salt,
+                        Address = "Hà Nội, Việt Nam",
                         CreatedDate = DateTime.Now
                     };
                     try
@@ -163,8 +165,8 @@ namespace BarBeeOrder.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("dang-nhap.html",Name ="DangNhap")]
-        public async Task<IActionResult> Login(LoginViewModel customer,string returnUrl = null)
+        [Route("dang-nhap.html", Name = "DangNhap")]
+        public async Task<IActionResult> Login(LoginViewModel customer, string returnUrl = null)
         {
             try
             {
@@ -202,6 +204,7 @@ namespace BarBeeOrder.Controllers
                     ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                     await HttpContext.SignInAsync(claimsPrincipal);
                     _notyfService.Success("Đăng nhập thành công!");
+                    
                     return RedirectToAction("Dashboard", "Accounts");
                 }
             }
@@ -209,16 +212,61 @@ namespace BarBeeOrder.Controllers
             {
                 return RedirectToAction("Dangkitaikhoan", "Accounts");
             }
-            
+
             return View(customer);
         }
         [HttpGet]
-        [Route("dang-xuat.html",Name ="DangXuat")]
+        [Route("dang-xuat.html", Name = "DangXuat")]
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync();
             HttpContext.Session.Remove("CustomerId");
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return PartialView("ChangePassword");
+        }
+
+        [HttpPost]
+        public IActionResult ChangePassword(ChangePasswordVM model)
+        {
+            try
+            {
+
+                var taikhoanID = HttpContext.Session.GetString("CustomerId");
+                if (taikhoanID == null)
+                {
+                    return RedirectToAction("Login", "Accounts");
+                }
+                if (ModelState.IsValid)
+                {
+                    var taikhoan = _context.Customers.Find(Convert.ToInt32(taikhoanID));
+                    if (taikhoan == null)
+                    {
+                        return RedirectToAction("Login", "Accounts");
+                    }
+                    var pass = (model.PasswordNow.Trim() + taikhoan.Salt.Trim()).ToMD5();
+                    if (pass == taikhoan.Password)
+                    {
+                        string passNew = (model.Password.Trim() + taikhoan.Salt.Trim()).ToMD5();
+                        taikhoan.Password = passNew;
+                        _context.Update(taikhoan);
+                        _context.SaveChanges();
+                        _notyfService.Success("Đổi mật khẩu thành công!");
+                        return RedirectToAction("Dashboard", "Accounts");
+                    }
+                }
+            }
+            catch
+            {
+                _notyfService.Error("Đổi mật khẩu không thành công!");
+                return RedirectToAction("Dashboard", "Accounts");
+            }
+            _notyfService.Error("Đổi mật khẩu không thành công!");
+            return RedirectToAction("Dashboard", "Accounts");
         }
 
     }
