@@ -1985,3 +1985,9 @@ E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Accounts\Dangkitaikhoan.cshtml.g.cs
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Accounts\Login.cshtml.g.cs
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Accounts\_OrderPartialView.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Accounts\_ChangePasswordPartialView.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\ShoppingCart\Index.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Shared\Components\HeaderCart\Default.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Shared\Components\NumberCart\Default.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Checkout\Index.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Checkout\Success.cshtml.g.cs

@@ -4,6 +4,7 @@
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<Order> orders = ViewBag.lsOrder;
+    BarBeeOrder.ModelView.ChangePasswordVM changePasswordVM = new BarBeeOrder.ModelView.ChangePasswordVM();
 }
 <!-- Begin Main Content Area -->
 <main class="main-content">
@@ -36,10 +37,7 @@
                             <a class="nav-link" id="account-orders-tab" data-bs-toggle="tab" href="#account-orders" role="tab" aria-controls="account-orders" aria-selected="false">Danh sách đơn hàng</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="account-address-tab" data-bs-toggle="tab" href="#account-address" role="tab" aria-controls="account-address" aria-selected="false">Addresses</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="account-details-tab" data-bs-toggle="tab" href="#account-details" role="tab" aria-controls="account-details" aria-selected="false">Account Details</a>
+                            <a class="nav-link" id="account-details-tab" data-bs-toggle="tab" href="#account-details" role="tab" aria-controls="account-details" aria-selected="false">Thay đổi mật khẩu</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="account-logout-tab" href="/dang-xuat.html" role="tab" aria-selected="false">Đăng xuất</a>
@@ -56,6 +54,11 @@
                                 <p>
                                     Cảm ơn bạn đã tin tưởng BarBeeOrder, tại đây bạn có thể kiểm tra đơn hàng, kiểm tra thông tin cá nhân hoặc thay đổi mật khẩu
                                 </p>
+                                <h3>THông tin tài khoản</h3>
+                                <p>Địa chỉ email: @Model.Email</p>
+                                <p>Số điện thoại: @Model.Phone</p>
+                                <p>Địa chỉ: @Model.Address</p>
+                                <p>Tài khoản hoạt động từ: @Model.CreatedDate</p>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="account-orders" role="tabpanel" aria-labelledby="account-orders-tab">
@@ -64,67 +67,8 @@
                                 @await Html.PartialAsync("_OrderPartialView",orders)
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="account-address" role="tabpanel" aria-labelledby="account-address-tab">
-                            <div class="myaccount-address">
-                                <p>The following addresses will be used on the checkout page by default.</p>
-                                <div class="row">
-                                    <div class="col">
-                                        <h4 class="small-title">BILLING ADDRESS</h4>
-                                        <address>
-                                            1234 Heaven Stress, Beverly Hill OldYork UnitedState of Lorem
-                                        </address>
-                                    </div>
-                                    <div class="col">
-                                        <h4 class="small-title">SHIPPING ADDRESS</h4>
-                                        <address>
-                                            1234 Heaven Stress, Beverly Hill OldYork UnitedState of Lorem
-                                        </address>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="tab-pane fade" id="account-details" role="tabpanel" aria-labelledby="account-details-tab">
-                            <div class="myaccount-details">
-                                <form action="#" class="myaccount-form">
-                                    <div class="myaccount-form-inner">
-                                        <div class="single-input single-input-half">
-                                            <label>First Name*</label>
-                                            <input type="text">
-                                        </div>
-                                        <div class="single-input single-input-half">
-                                            <label>Last Name*</label>
-                                            <input type="text">
-                                        </div>
-                                        <div class="single-input">
-                                            <label>Email*</label>
-                                            <input type="email">
-                                        </div>
-                                        <div class="single-input">
-                                            <label>
-                                                Current Password(leave blank to leave
-                                                unchanged)
-                                            </label>
-                                            <input type="password">
-                                        </div>
-                                        <div class="single-input">
-                                            <label>
-                                                New Password (leave blank to leave
-                                                unchanged)
-                                            </label>
-                                            <input type="password">
-                                        </div>
-                                        <div class="single-input">
-                                            <label>Confirm New Password</label>
-                                            <input type="password">
-                                        </div>
-                                        <div class="single-input">
-                                            <button class="btn btn-custom-size lg-size btn-secondary btn-primary-hover rounded-0" type="submit">
-                                                <span>SAVE CHANGES</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
+                           @await Html.PartialAsync("_ChangePasswordPartialView",changePasswordVM)
                         </div>
                     </div>
                 </div>
