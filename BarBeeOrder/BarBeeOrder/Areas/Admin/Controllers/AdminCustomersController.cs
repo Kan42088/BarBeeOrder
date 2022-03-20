@@ -45,7 +45,10 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                         ViewData["Account"] = khachhang;
                         var pageNumber = page ?? 1;
                         var pageSize = 5; //Show 10 rows every time
-
+                        List<SelectListItem> listStatus = new List<SelectListItem>();
+                        listStatus.Add(new SelectListItem() { Text = "Hoạt động", Value = "1" });
+                        listStatus.Add(new SelectListItem() { Text = "Không hoạt động", Value = "0" });
+                        ViewData["TrangThai"] = listStatus;
 
                         List<Customer> lsCustomers = new List<Customer>();
                         lsCustomers = _context.Customers.AsNoTracking().Where(x => x.IsDeteted == false && x.RoleId==2).OrderByDescending(x => x.CustomerId).ToList();

@@ -2004,3 +2004,8 @@ E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\Syste
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\System.Web.WebPages.dll
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\Microsoft.Web.Infrastructure.dll
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Error\Error.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\AdminPostCategories\Create.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\AdminPostCategories\Delete.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\AdminPostCategories\Details.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\AdminPostCategories\Edit.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\AdminPostCategories\Index.cshtml.g.cs

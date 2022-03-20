@@ -196,7 +196,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     try
                     {
                         ViewData["Account"] = khachhang;
-                        ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name");
+                        ViewData["DanhMuc"] = new SelectList(_context.Categories.AsNoTracking().Where(x=> x.IsDeleted==false), "CategoryId", "Name");
                         return View();
                     }
                     catch
@@ -304,7 +304,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                         {
                             return NotFound();
                         }
-                        ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
+                        ViewData["DanhMuc"] = new SelectList(_context.Categories.AsNoTracking().Where(x => x.IsDeleted == false), "CategoryId", "Name", product.CategoryId);
                         return View(product);
                     }
                     catch
