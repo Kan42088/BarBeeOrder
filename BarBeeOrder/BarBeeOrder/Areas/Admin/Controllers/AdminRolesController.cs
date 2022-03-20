@@ -38,13 +38,14 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
-
+                        ViewData["Account"] = khachhang;
+                        return View(await _context.Roles.ToListAsync());
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    return View(await _context.Roles.ToListAsync());
+                    
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -71,26 +72,26 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id == null)
+                        {
+                            return NotFound();
+                        }
 
+                        var role = await _context.Roles
+                            .FirstOrDefaultAsync(m => m.RoleId == id);
+                        if (role == null)
+                        {
+                            return NotFound();
+                        }
+
+                        return View(role);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
 
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var role = await _context.Roles
-                        .FirstOrDefaultAsync(m => m.RoleId == id);
-                    if (role == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return View(role);
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
@@ -128,20 +129,21 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
-
+                        ViewData["Account"] = khachhang;
+                        if (ModelState.IsValid)
+                        {
+                            _context.Add(role);
+                            await _context.SaveChangesAsync();
+                            _notyfService.Success("Tạo mới thành công!");
+                            return RedirectToAction(nameof(Index));
+                        }
+                        return View(role);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (ModelState.IsValid)
-                    {
-                        _context.Add(role);
-                        await _context.SaveChangesAsync();
-                        _notyfService.Success("Tạo mới thành công!");
-                        return RedirectToAction(nameof(Index));
-                    }
-                    return View(role);
+                    
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -169,23 +171,24 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id == null)
+                        {
+                            return NotFound();
+                        }
 
+                        var role = await _context.Roles.FindAsync(id);
+                        if (role == null)
+                        {
+                            return NotFound();
+                        }
+                        return View(role);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var role = await _context.Roles.FindAsync(id);
-                    if (role == null)
-                    {
-                        return NotFound();
-                    }
-                    return View(role);
+                    
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -218,40 +221,41 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id != role.RoleId)
+                        {
+                            return NotFound();
+                        }
 
+                        if (ModelState.IsValid)
+                        {
+                            try
+                            {
+                                _context.Update(role);
+                                _notyfService.Success("Chỉnh sửa thành công!");
+                                await _context.SaveChangesAsync();
+                            }
+                            catch (DbUpdateConcurrencyException)
+                            {
+                                if (!RoleExists(role.RoleId))
+                                {
+                                    _notyfService.Error("Chỉnh sửa thất bại!");
+                                    return NotFound();
+                                }
+                                else
+                                {
+                                    throw;
+                                }
+                            }
+                            return RedirectToAction(nameof(Index));
+                        }
+                        return View(role);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id != role.RoleId)
-                    {
-                        return NotFound();
-                    }
-
-                    if (ModelState.IsValid)
-                    {
-                        try
-                        {
-                            _context.Update(role);
-                            _notyfService.Success("Chỉnh sửa thành công!");
-                            await _context.SaveChangesAsync();
-                        }
-                        catch (DbUpdateConcurrencyException)
-                        {
-                            if (!RoleExists(role.RoleId))
-                            {
-                                _notyfService.Error("Chỉnh sửa thất bại!");
-                                return NotFound();
-                            }
-                            else
-                            {
-                                throw;
-                            }
-                        }
-                        return RedirectToAction(nameof(Index));
-                    }
-                    return View(role);
+                    
 
 
                 }
@@ -280,25 +284,26 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id == null)
+                        {
+                            return NotFound();
+                        }
 
+                        var role = await _context.Roles
+                            .FirstOrDefaultAsync(m => m.RoleId == id);
+                        if (role == null)
+                        {
+                            return NotFound();
+                        }
+
+                        return View(role);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var role = await _context.Roles
-                        .FirstOrDefaultAsync(m => m.RoleId == id);
-                    if (role == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return View(role);
+                   
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -329,6 +334,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         var role = await _context.Roles.FindAsync(id);
                         _context.Roles.Remove(role);
                         await _context.SaveChangesAsync();

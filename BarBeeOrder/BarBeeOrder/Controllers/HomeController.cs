@@ -47,11 +47,11 @@ namespace BarBeeOrder.Controllers
                 {
                     HomeProduct homeProduct = new HomeProduct();
                     homeProduct.category = item;
-                    homeProduct.products = lsProducts.Where(x => x.CategoryId == item.CategoryId).Take(6).ToList();
+                    homeProduct.products = lsProducts.Where(x => x.CategoryId == item.CategoryId).Take(8).ToList();
                     homeProducts.Add(homeProduct);
                 }
                 model.Products = homeProducts;
-                ViewBag.AllProducts = lsProducts.Take(6).ToList();
+                ViewBag.AllProducts = lsProducts.Take(8).ToList();
                 return View(model);
             }
             catch

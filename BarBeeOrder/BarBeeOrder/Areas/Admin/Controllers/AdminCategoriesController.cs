@@ -60,20 +60,21 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        var pageNumber = page ?? 1;
+                        var pageSize = 10; //Show 10 rows every time
 
+                        List<Category> lsCategories = new List<Category>();
+                        lsCategories = _context.Categories.AsNoTracking().Where(x => x.IsDeleted == false && x.Type == 1).OrderByDescending(x => x.CategoryId).ToList();
+                        PagedList<Category> models = new PagedList<Category>(lsCategories.AsQueryable(), pageNumber, pageSize);
+                        ViewBag.CurrentPage = pageNumber;
+                        ViewData["Account"] = khachhang;
+                        return View(models);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    var pageNumber = page ?? 1;
-                    var pageSize = 10; //Show 10 rows every time
-
-                    List<Category> lsCategories = new List<Category>();
-                    lsCategories = _context.Categories.AsNoTracking().Where(x => x.IsDeleted == false && x.Type == 1).OrderByDescending(x => x.CategoryId).ToList();
-                    PagedList<Category> models = new PagedList<Category>(lsCategories.AsQueryable(), pageNumber, pageSize);
-                    ViewBag.CurrentPage = pageNumber;
-                    return View(models);
+                    
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
@@ -101,25 +102,25 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        if (id == null)
+                        {
+                            return NotFound();
+                        }
 
+                        var category = await _context.Categories
+                            .FirstOrDefaultAsync(m => m.CategoryId == id);
+                        if (category == null)
+                        {
+                            return NotFound();
+                        }
+                        ViewData["Account"] = khachhang;
+                        return View(category);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var category = await _context.Categories
-                        .FirstOrDefaultAsync(m => m.CategoryId == id);
-                    if (category == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return View(category);
+                    
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -146,13 +147,14 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
-
+                        ViewData["Account"] = khachhang;
+                        return View();
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    return View();
+                   
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -184,31 +186,32 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
-
+                        ViewData["Account"] = khachhang;
+                        if (ModelState.IsValid)
+                        {
+                            category.Type = 1;
+                            if (fThumb != null)
+                            {
+                                string extension = Path.GetExtension(fThumb.FileName);
+                                string image = Utilities.SEOUrl(category.Name) + extension;
+                                category.Thumb = await Utilities.UploadFile(fThumb, @"categories", image.ToLower());
+                            }
+                            if (string.IsNullOrEmpty(category.Thumb))
+                            {
+                                category.Thumb = "default.jpg";
+                            }
+                            _context.Add(category);
+                            await _context.SaveChangesAsync();
+                            _notyfService.Success("Tạo mới thành công!");
+                            return RedirectToAction(nameof(Index));
+                        }
+                        return View(category);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (ModelState.IsValid)
-                    {
-                        category.Type = 1;
-                        if (fThumb != null)
-                        {
-                            string extension = Path.GetExtension(fThumb.FileName);
-                            string image = Utilities.SEOUrl(category.Name) + extension;
-                            category.Thumb = await Utilities.UploadFile(fThumb, @"categories", image.ToLower());
-                        }
-                        if (string.IsNullOrEmpty(category.Thumb))
-                        {
-                            category.Thumb = "default.jpg";
-                        }
-                        _context.Add(category);
-                        await _context.SaveChangesAsync();
-                        _notyfService.Success("Tạo mới thành công!");
-                        return RedirectToAction(nameof(Index));
-                    }
-                    return View(category);
+                    
 
 
                 }
@@ -237,23 +240,24 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id == null)
+                        {
+                            return NotFound();
+                        }
 
+                        var category = await _context.Categories.FindAsync(id);
+                        if (category == null)
+                        {
+                            return NotFound();
+                        }
+                        return View(category);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var category = await _context.Categories.FindAsync(id);
-                    if (category == null)
-                    {
-                        return NotFound();
-                    }
-                    return View(category);
+                    
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -285,49 +289,50 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id != category.CategoryId)
+                        {
+                            return NotFound();
+                        }
 
+                        if (ModelState.IsValid)
+                        {
+                            try
+                            {
+                                if (fThumb != null)
+                                {
+                                    string extension = Path.GetExtension(fThumb.FileName);
+                                    string image = Utilities.SEOUrl(category.Name) + extension;
+                                    category.Thumb = await Utilities.UploadFile(fThumb, @"categories", image.ToLower());
+                                }
+                                if (string.IsNullOrEmpty(category.Thumb))
+                                {
+                                    category.Thumb = "default.jpg";
+                                }
+                                _context.Update(category);
+                                _notyfService.Success("Chỉnh sửa thành công!");
+                                await _context.SaveChangesAsync();
+                            }
+                            catch (DbUpdateConcurrencyException)
+                            {
+                                if (!CategoryExists(category.CategoryId))
+                                {
+                                    return NotFound();
+                                }
+                                else
+                                {
+                                    throw;
+                                }
+                            }
+                            return RedirectToAction(nameof(Index));
+                        }
+                        return View(category);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id != category.CategoryId)
-                    {
-                        return NotFound();
-                    }
-
-                    if (ModelState.IsValid)
-                    {
-                        try
-                        {
-                            if (fThumb != null)
-                            {
-                                string extension = Path.GetExtension(fThumb.FileName);
-                                string image = Utilities.SEOUrl(category.Name) + extension;
-                                category.Thumb = await Utilities.UploadFile(fThumb, @"categories", image.ToLower());
-                            }
-                            if (string.IsNullOrEmpty(category.Thumb))
-                            {
-                                category.Thumb = "default.jpg";
-                            }
-                            _context.Update(category);
-                            _notyfService.Success("Chỉnh sửa thành công!");
-                            await _context.SaveChangesAsync();
-                        }
-                        catch (DbUpdateConcurrencyException)
-                        {
-                            if (!CategoryExists(category.CategoryId))
-                            {
-                                return NotFound();
-                            }
-                            else
-                            {
-                                throw;
-                            }
-                        }
-                        return RedirectToAction(nameof(Index));
-                    }
-                    return View(category);
+                   
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -355,26 +360,27 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id == null)
+                        {
+                            return NotFound();
+                        }
+
+                        var category = await _context.Categories
+                            .FirstOrDefaultAsync(m => m.CategoryId == id);
+                        if (category == null)
+                        {
+                            return NotFound();
+                        }
+
+                        return View(category);
 
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var category = await _context.Categories
-                        .FirstOrDefaultAsync(m => m.CategoryId == id);
-                    if (category == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return View(category);
-
+                    
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -404,6 +410,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         var category = await _context.Categories.FindAsync(id);
                         category.IsDeleted = true;
                         _context.Categories.Remove(category);

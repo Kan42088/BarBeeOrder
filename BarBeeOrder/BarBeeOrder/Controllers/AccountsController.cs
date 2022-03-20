@@ -209,10 +209,14 @@ namespace BarBeeOrder.Controllers
                         ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                         await HttpContext.SignInAsync(claimsPrincipal);
                         _notyfService.Success("Đăng nhập thành công!");
+                        khachhang.LastLogin = DateTime.Now;
+                        _context.Update(khachhang);
+                        _context.SaveChanges();
                         if (!string.IsNullOrEmpty(returnUrl))
                         {
                             return Redirect(returnUrl);
                         }
+                        
                         return RedirectToAction("Dashboard", "Accounts");
                     }
                     else
@@ -228,6 +232,13 @@ namespace BarBeeOrder.Controllers
                         ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                         await HttpContext.SignInAsync(claimsPrincipal);
                         _notyfService.Success("Đăng nhập thành công!");
+                        khachhang.LastLogin = DateTime.Now;
+                        _context.Update(khachhang);
+                        _context.SaveChanges();
+                        if (!string.IsNullOrEmpty(returnUrl))
+                        {
+                            return Redirect(returnUrl);
+                        }
                         return RedirectToAction("Index", "Home",new{area ="Admin" });
                     }
                     

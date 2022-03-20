@@ -1,4 +1,4 @@
-﻿@model BarBeeOrder.Models.Account
+﻿@model BarBeeOrder.Models.Customer
 
 @{
     ViewData["Title"] = "Details";
@@ -26,7 +26,7 @@
                 <tbody>
                     <tr>
                         <td>ID:</td>
-                        <td class="text-dark font-weight-semibold">@Model.AccountId</td>
+                        <td class="text-dark font-weight-semibold">@Model.CustomerId</td>
                     </tr>
                     <tr>
                         <td>Họ và tên:</td>
@@ -75,7 +75,7 @@
                     </tr>
                     <tr>
                         <td>Quyền truy cập:</td>
-                        <td>@Model.Roll.RoleName</td>
+                        <td>@Model.Role.RoleName</td>
                     </tr>
 
                 </tbody>

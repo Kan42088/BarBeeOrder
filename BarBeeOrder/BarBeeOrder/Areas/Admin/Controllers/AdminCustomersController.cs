@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
-using X.PagedList.Mvc.Core;
-using X.PagedList;
+
 using Microsoft.AspNetCore.Http;
+using PagedList.Core;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -42,10 +42,14 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         var pageNumber = page ?? 1;
-                        var pageSize = 10; //Show 10 rows every time
-                        var models = this._context.Customers.ToPagedList(pageNumber, pageSize);
+                        var pageSize = 5; //Show 10 rows every time
 
+
+                        List<Customer> lsCustomers = new List<Customer>();
+                        lsCustomers = _context.Customers.AsNoTracking().Where(x => x.IsDeteted == false && x.RoleId==2).OrderByDescending(x => x.CustomerId).ToList();
+                        PagedList<Customer> models = new PagedList<Customer>(lsCustomers.AsQueryable(), pageNumber, pageSize);
                         ViewBag.CurrentPage = pageNumber;
                         return View(models);
                     }
@@ -81,6 +85,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         if (id == null)
                         {
                             return NotFound();
@@ -139,6 +144,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         if (ModelState.IsValid)
                         {
                             _context.Add(customer);
@@ -180,6 +186,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         if (id == null)
                         {
                             return NotFound();
@@ -229,6 +236,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         if (id != customer.CustomerId)
                         {
                             return NotFound();
@@ -288,6 +296,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         if (id == null)
                         {
                             return NotFound();
@@ -336,6 +345,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         var customer = await _context.Customers.FindAsync(id);
                         _context.Customers.Remove(customer);
                         await _context.SaveChangesAsync();

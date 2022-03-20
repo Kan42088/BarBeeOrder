@@ -1,4 +1,4 @@
-﻿@model BarBeeOrder.Models.Account
+﻿@model BarBeeOrder.Models.Customer
 
 @{
     ViewData["Title"] = "Delete";
@@ -30,7 +30,7 @@
                 <tbody>
                     <tr>
                         <td>ID:</td>
-                        <td class="text-dark font-weight-semibold">@Model.AccountId</td>
+                        <td class="text-dark font-weight-semibold">@Model.CustomerId</td>
                     </tr>
                     <tr>
                         <td>Họ và tên:</td>
@@ -50,13 +50,13 @@
                     </tr>
                     <tr>
                         <td>Quyền truy cập:</td>
-                        <td>@Model.Roll.RoleName</td>
+                        <td>@Model.Role.RoleName</td>
                     </tr
                     <tr>
                         <td>Xác nhận xóa:</td>
                         <td>
-                            <form asp-controller="AdminAccounts" asp-action="Delete" asp-route-id="@Model.AccountId">
-                                <input type="hidden" asp-for="AccountId" />
+                            <form asp-controller="AdminAccounts" asp-action="Delete" asp-route-id="@Model.CustomerId">
+                                <input type="hidden" asp-for="CustomerId" />
                                 <input type="submit" value="Xác nhận xóa" class="btn btn-danger" /> 
                              </form>
                         </td>

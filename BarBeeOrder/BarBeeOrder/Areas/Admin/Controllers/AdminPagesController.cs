@@ -37,6 +37,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         var models = _context.Pages.OrderByDescending(x => x.PageId).ToList();
 
                         return View(models);
@@ -75,6 +76,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         if (id == null)
                         {
                             return NotFound();
@@ -122,6 +124,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         return View();
                     }
                     catch
@@ -159,6 +162,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         if (ModelState.IsValid)
                         {
                             page.CreatedDate = DateTime.Now;
@@ -201,6 +205,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         if (id == null)
                         {
                             return NotFound();
@@ -248,6 +253,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         if (id != page.PageId)
                         {
                             return NotFound();
@@ -307,6 +313,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         if (id == null)
                         {
                             return NotFound();
@@ -354,6 +361,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         var page = await _context.Pages.FindAsync(id);
                         _context.Pages.Remove(page);
                         await _context.SaveChangesAsync();
