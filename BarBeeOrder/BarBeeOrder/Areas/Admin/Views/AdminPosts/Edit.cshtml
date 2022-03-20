@@ -21,6 +21,7 @@
 <form asp-controller="AdminPosts" asp-action="Edit" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="PostId" />
+    <input type="hidden" asp-for="CustomerId" />
     <input type="hidden" asp-for="Thumb" />
     <input type="hidden" asp-for="CreatedDate" />
     <div class="page-header no-gutters has-tab">
@@ -55,13 +56,6 @@
                         <label class="font-weight-semibold" for="productName">Tiêu đề bài đăng</label>
                         <input type="text" class="form-control" asp-for="Tittle">
                         <span asp-validation-for="Tittle" class="text-danger"></span>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="font-weight-semibold" for="productPrice">Tác giả</label>
-                            <input type="text" class="form-control" asp-for="CustomerId">
-                            <span asp-validation-for="CustomerId" class="text-danger"></span>
-                        </div>
                     </div>
                     <div class="row">
                         <div class="m-t-25">
