@@ -10,6 +10,7 @@ using PagedList.Core;
 using BarBeeOrder.Helper;
 using System.IO;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Http;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -80,53 +81,139 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             //    await _context.SaveChangesAsync();
             //}
 
-            var pageNumber = page ?? 1;
-            var pageSize = 5; //Show 5 rows every time
 
-            List<Product> lsProducts = new List<Product>();
-            if (CatID != 0)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                lsProducts = _context.Products.AsNoTracking().Where(x => x.CategoryId == CatID && x.IsDelete == false).Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+
+                    try
+                    {
+
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    var pageNumber = page ?? 1;
+                    var pageSize = 5; //Show 5 rows every time
+
+                    List<Product> lsProducts = new List<Product>();
+                    if (CatID != 0)
+                    {
+                        lsProducts = _context.Products.AsNoTracking().Where(x => x.CategoryId == CatID && x.IsDelete == false).Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
+                    }
+                    else
+                    {
+                        lsProducts = _context.Products.AsNoTracking().Where(x => x.IsDelete == false).Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
+                    }
+
+                    PagedList<Product> models = new PagedList<Product>(lsProducts.AsQueryable(), pageNumber, pageSize);
+                    ViewBag.CurrentCateID = CatID;
+                    ViewBag.CurrentPage = pageNumber;
+                    ViewData["DanhMuc"] = new SelectList(_context.Categories.Where(x => x.IsDeleted == false && x.Type == 1), "CategoryId", "Name", CatID);
+
+                    //var models = lsProducts.AsQueryable().ToPagedList(pageNumber, pageSize);
+
+                    return View(models);
+
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
             else
             {
-                lsProducts = _context.Products.AsNoTracking().Where(x => x.IsDelete == false).Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-
-            PagedList<Product> models = new PagedList<Product>(lsProducts.AsQueryable(), pageNumber, pageSize);
-            ViewBag.CurrentCateID = CatID;
-            ViewBag.CurrentPage = pageNumber;
-            ViewData["DanhMuc"] = new SelectList(_context.Categories.Where(x => x.IsDeleted == false && x.Type == 1), "CategoryId", "Name", CatID);
-
-            //var models = lsProducts.AsQueryable().ToPagedList(pageNumber, pageSize);
-
-            return View(models);
+            
         }
 
         // GET: Admin/AdminProducts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                return NotFound();
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var product = await _context.Products
+                        .Include(p => p.Category)
+                        .FirstOrDefaultAsync(m => m.ProductId == id);
+                    if (product == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return View(product);
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
-            var product = await _context.Products
-                .Include(p => p.Category)
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
+            
         }
 
         // GET: Admin/AdminProducts/Create
         public IActionResult Create()
         {
-            ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name");
-            return View();
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
+            {
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name");
+                    return View();
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+
+            
         }
 
         // POST: Admin/AdminProducts/Create
@@ -136,47 +223,103 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProductId,ProductName,ShortDescription,CategoryId,Description,Price,Discount,Video,CreatedDate,ModifiedDate,Tittle,BestSellers,Active,HomeFlag")] Product product, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
-            if (ModelState.IsValid)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                product.ProductName = Utilities.ToTitleCase(product.ProductName);
-                product.Alias = Utilities.SEOUrl(product.ProductName);
-                if (fThumb != null)
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
                 {
-                    string extension = Path.GetExtension(fThumb.FileName);
-                    string image = Utilities.SEOUrl(product.ProductName) + extension;
-                    product.Thumb = await Utilities.UploadFile(fThumb, @"products", image.ToLower());
-                }
-                if (string.IsNullOrEmpty(product.Thumb))
-                {
-                    product.Thumb = "default.jpg";
-                }
-                product.ModifiedDate = DateTime.Now;
-                product.CreatedDate = DateTime.Now;
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
 
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                _notyfService.Success("Tạo mới thành công!");
-                return RedirectToAction(nameof(Index));
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    if (ModelState.IsValid)
+                    {
+                        product.ProductName = Utilities.ToTitleCase(product.ProductName);
+                        product.Alias = Utilities.SEOUrl(product.ProductName);
+                        if (fThumb != null)
+                        {
+                            string extension = Path.GetExtension(fThumb.FileName);
+                            string image = Utilities.SEOUrl(product.ProductName) + extension;
+                            product.Thumb = await Utilities.UploadFile(fThumb, @"products", image.ToLower());
+                        }
+                        if (string.IsNullOrEmpty(product.Thumb))
+                        {
+                            product.Thumb = "default.jpg";
+                        }
+                        product.ModifiedDate = DateTime.Now;
+                        product.CreatedDate = DateTime.Now;
+
+                        _context.Add(product);
+                        await _context.SaveChangesAsync();
+                        _notyfService.Success("Tạo mới thành công!");
+                        return RedirectToAction(nameof(Index));
+                    }
+                    ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
+                    return View(product);
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
-            return View(product);
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+
+            
         }
 
         // GET: Admin/AdminProducts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                return NotFound();
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var product = await _context.Products.FindAsync(id);
+                    if (product == null)
+                    {
+                        return NotFound();
+                    }
+                    ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
+                    return View(product);
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
-            return View(product);
+            
         }
 
         // POST: Admin/AdminProducts/Edit/5
@@ -186,68 +329,126 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ShortDescription,CategoryId,Description,Price,Discount,Video,CreatedDate,ModifiedDate,Tittle,BestSellers,Active,HomeFlag")] Product product, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
-            if (id != product.ProductId)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
                 {
-                    product.ProductName = Utilities.ToTitleCase(product.ProductName);
-                    product.Alias = Utilities.SEOUrl(product.ProductName);
-                    if (fThumb != null)
+                    if (khachhang.RoleId == 2)
                     {
-                        string extension = Path.GetExtension(fThumb.FileName);
-                        string image = Utilities.SEOUrl(product.ProductName) + extension;
-                        product.Thumb = await Utilities.UploadFile(fThumb, @"products", image.ToLower());
+                        return RedirectToAction("Index", "Home", new { area = "" });
                     }
-                    if (string.IsNullOrEmpty(product.Thumb))
+                    try
                     {
-                        product.Thumb = "default.png";
-                    }
-                    product.ModifiedDate = DateTime.Now;
 
-                    _context.Update(product);
-                    _notyfService.Success("Chỉnh sửa thành công!");
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.ProductId))
+                    }
+                    catch
                     {
-                        _notyfService.Error("Chỉnh sửa thất bại!");
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    if (id != product.ProductId)
+                    {
                         return NotFound();
                     }
-                    else
+
+                    if (ModelState.IsValid)
                     {
-                        throw;
+                        try
+                        {
+                            product.ProductName = Utilities.ToTitleCase(product.ProductName);
+                            product.Alias = Utilities.SEOUrl(product.ProductName);
+                            if (fThumb != null)
+                            {
+                                string extension = Path.GetExtension(fThumb.FileName);
+                                string image = Utilities.SEOUrl(product.ProductName) + extension;
+                                product.Thumb = await Utilities.UploadFile(fThumb, @"products", image.ToLower());
+                            }
+                            if (string.IsNullOrEmpty(product.Thumb))
+                            {
+                                product.Thumb = "default.png";
+                            }
+                            product.ModifiedDate = DateTime.Now;
+
+                            _context.Update(product);
+                            _notyfService.Success("Chỉnh sửa thành công!");
+                            await _context.SaveChangesAsync();
+                        }
+                        catch (DbUpdateConcurrencyException)
+                        {
+                            if (!ProductExists(product.ProductId))
+                            {
+                                _notyfService.Error("Chỉnh sửa thất bại!");
+                                return NotFound();
+                            }
+                            else
+                            {
+                                throw;
+                            }
+                        }
+                        return RedirectToAction(nameof(Index));
                     }
+                    ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
+                    return View(product);
+
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
-            return View(product);
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+
+            
         }
 
         // GET: Admin/AdminProducts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                return NotFound();
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var product = await _context.Products
+                        .Include(p => p.Category)
+                        .FirstOrDefaultAsync(m => m.ProductId == id);
+                    if (product == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return View(product);
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
-            var product = await _context.Products
-                .Include(p => p.Category)
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
 
-            return View(product);
         }
 
         // POST: Admin/AdminProducts/Delete/5
@@ -255,12 +456,41 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            product.IsDelete = true;
-            _context.Products.Update(product);
-            await _context.SaveChangesAsync();
-            _notyfService.Warning("Xóa thành công!");
-            return RedirectToAction(nameof(Index));
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
+            {
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+                        var product = await _context.Products.FindAsync(id);
+                        product.IsDelete = true;
+                        _context.Products.Update(product);
+                        await _context.SaveChangesAsync();
+                        _notyfService.Warning("Xóa thành công!");
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+
+
+                    
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+
+
         }
 
         private bool ProductExists(int id)

@@ -34,13 +34,13 @@ namespace BarBeeOrder.Controllers
             ViewData["MenuCategories"] = categories;
 
             List<Post> lsPosts = new List<Post>();
-            lsPosts = _context.Posts.AsNoTracking().Where(x => x.Published == true && x.IsDelete ==false).Include(p => p.Account).OrderByDescending(x => x.PostId).ToList();
+            lsPosts = _context.Posts.AsNoTracking().Where(x => x.Published == true && x.IsDelete ==false).Include(p => p.Customer).OrderByDescending(x => x.PostId).ToList();
             PagedList<Post> models = new PagedList<Post>(lsPosts.AsQueryable(), pageNumber, pageSize);
             
             ViewBag.CurrentPage = pageNumber;
 
             List<Post> newsfeeds = new List<Post>();
-            newsfeeds = _context.Posts.AsNoTracking().Where(x => x.Published == true && x.IsDelete==false && x.IsHot==true).Include(p => p.Account).OrderByDescending(x => x.PostId).Take(3).ToList();
+            newsfeeds = _context.Posts.AsNoTracking().Where(x => x.Published == true && x.IsDelete==false && x.IsHot==true).Include(p => p.Customer).OrderByDescending(x => x.PostId).Take(3).ToList();
             ViewBag.NewsFeeds = newsfeeds;
             return View(models);
         }

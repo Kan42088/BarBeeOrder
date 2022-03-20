@@ -2,5 +2,86 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewData["Title"] = "Success";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
-<p>Thành công</p>
+@model BarBeeOrder.Models.Order
+
+<main class="main-content">
+    <div class="breadcrumb-area breadcrumb-height" data-bg-image="assets/images/breadcrumb/bg/1-1-1920x373.jpg">
+        <div class="container h-100">
+            <div class="row h-100">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-item">
+                        <h2 class="breadcrumb-heading">Đặt hàng thành công </h2>
+                        <ul>
+                            <li>
+                                <a href="/">Trang chủ <i class="pe-7s-angle-right"></i></a>
+                            </li>
+                            <li>Đặt hàng thành công</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="checkout-area section-space-y-axis-100">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-12 col-12">
+                    <div class="your-order">
+                        <h3>Đặt hàng thành công</h3>
+                        <div class="your-order-table table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="cart-product-name">Mã đơn hàng</th>
+                                        <th class="cart-product-total">Khách hàng</th>
+                                        <th class="cart-product-total">Địa chỉ</th>
+                                    </tr>
+                                </thead>
+                                @if (Model != null)
+                                {
+                                    <thead>
+
+                                        <tr class="cart-product-name">
+                                            <td class="">
+                                                <strong class="product-quantity">
+                                                    #@Model.OrderId
+                                                </strong>
+                                            </td>
+                                            <td class="cart-product-name">
+                                                <strong class="product-quantity">
+                                                    @Model.Customer.Fullname
+                                                </strong>
+                                            </td>
+                                            <td class="cart-product-name">
+                                                <strong class="product-quantity ">
+                                                    @Model.Customer.Address
+                                                </strong>
+                                            </td>
+                                        </tr>
+
+                                    </thead>
+                                }
+                                <tr class="order-total">
+                                    <th></th>
+                                    <strong><span class="amount">Cảm ơn bạn đã tin tưởng BarBeeOrder</span></strong>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="order-button-payment">
+                        <a href="/">
+                            <input  value="Về trang chủ" type="button">
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

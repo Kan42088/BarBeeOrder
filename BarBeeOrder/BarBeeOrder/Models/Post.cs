@@ -17,13 +17,13 @@ namespace BarBeeOrder.Models
         public bool IsNewfeed { get; set; }
         public bool IsDelete { get; set; }
         public string Author { get; set; }
-        public int? AccountId { get; set; }
+        public int? CustomerId { get; set; }
         public int? CategoryId { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string Alias { get; set; }
         public int? Views { get; set; }
 
-        public virtual Account Account { get; set; }
+        public virtual Customer Customer { get; set; }
     }
 }

@@ -58,6 +58,7 @@
                                         @if (User.Identity.IsAuthenticated)
                                         {
                                             <li><a class="dropdown-item" href="/tai-khoan-cua-toi.html">Tài khoản của tôi</a></li>
+                                            <li><a class="dropdown-item" href="/dang-xuat.html">Đăng xuất</a></li>
                                         }
                                         else
                                         {
@@ -66,11 +67,11 @@
                                         }
                                     </ul>
                                 </li>
-                                <li class="d-none d-md-block">
+                                @*<li class="d-none d-md-block">
                                     <a href="wishlist.html">
                                         <i class="pe-7s-like"></i>
                                     </a>
-                                </li>
+                                </li>*@
                                 <li class="d-block d-lg-none">
                                     <a href="#searchBar" class="search-btn toolbar-btn">
                                         <i class="pe-7s-search"></i>

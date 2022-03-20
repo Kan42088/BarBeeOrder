@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -25,25 +26,81 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // GET: Admin/AdminRoles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Roles.ToListAsync());
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
+            {
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    return View(await _context.Roles.ToListAsync());
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            
         }
 
         // GET: Admin/AdminRoles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                return NotFound();
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var role = await _context.Roles
+                        .FirstOrDefaultAsync(m => m.RoleId == id);
+                    if (role == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return View(role);
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
-            var role = await _context.Roles
-                .FirstOrDefaultAsync(m => m.RoleId == id);
-            if (role == null)
-            {
-                return NotFound();
-            }
 
-            return View(role);
+           
         }
 
         // GET: Admin/AdminRoles/Create
@@ -59,30 +116,87 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("RoleId,RoleName,Description")] Role role)
         {
-            if (ModelState.IsValid)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                _context.Add(role);
-                await _context.SaveChangesAsync();  
-                _notyfService.Success("Tạo mới thành công!");
-                return RedirectToAction(nameof(Index));
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    if (ModelState.IsValid)
+                    {
+                        _context.Add(role);
+                        await _context.SaveChangesAsync();
+                        _notyfService.Success("Tạo mới thành công!");
+                        return RedirectToAction(nameof(Index));
+                    }
+                    return View(role);
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            return View(role);
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+
+            
         }
 
         // GET: Admin/AdminRoles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                return NotFound();
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var role = await _context.Roles.FindAsync(id);
+                    if (role == null)
+                    {
+                        return NotFound();
+                    }
+                    return View(role);
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
-            var role = await _context.Roles.FindAsync(id);
-            if (role == null)
-            {
-                return NotFound();
-            }
-            return View(role);
+
+           
         }
 
         // POST: Admin/AdminRoles/Edit/5
@@ -92,52 +206,110 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("RoleId,RoleName,Description")] Role role)
         {
-            if (id != role.RoleId)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
                 {
-                    _context.Update(role);
-                    _notyfService.Success("Chỉnh sửa thành công!");
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RoleExists(role.RoleId))
+                    if (khachhang.RoleId == 2)
                     {
-                        _notyfService.Error("Chỉnh sửa thất bại!");
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    if (id != role.RoleId)
+                    {
                         return NotFound();
                     }
-                    else
+
+                    if (ModelState.IsValid)
                     {
-                        throw;
+                        try
+                        {
+                            _context.Update(role);
+                            _notyfService.Success("Chỉnh sửa thành công!");
+                            await _context.SaveChangesAsync();
+                        }
+                        catch (DbUpdateConcurrencyException)
+                        {
+                            if (!RoleExists(role.RoleId))
+                            {
+                                _notyfService.Error("Chỉnh sửa thất bại!");
+                                return NotFound();
+                            }
+                            else
+                            {
+                                throw;
+                            }
+                        }
+                        return RedirectToAction(nameof(Index));
                     }
+                    return View(role);
+
+
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            return View(role);
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+
+            
         }
 
         // GET: Admin/AdminRoles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                return NotFound();
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var role = await _context.Roles
+                        .FirstOrDefaultAsync(m => m.RoleId == id);
+                    if (role == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return View(role);
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
-            var role = await _context.Roles
-                .FirstOrDefaultAsync(m => m.RoleId == id);
-            if (role == null)
-            {
-                return NotFound();
-            }
 
-            return View(role);
+            
         }
 
         // POST: Admin/AdminRoles/Delete/5
@@ -145,11 +317,38 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var role = await _context.Roles.FindAsync(id);
-            _context.Roles.Remove(role);
-            await _context.SaveChangesAsync();
-            _notyfService.Warning("Xoá thành công!");
-            return RedirectToAction(nameof(Index));
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
+            {
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+                        var role = await _context.Roles.FindAsync(id);
+                        _context.Roles.Remove(role);
+                        await _context.SaveChangesAsync();
+                        _notyfService.Warning("Xoá thành công!");
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            
         }
 
         private bool RoleExists(int id)

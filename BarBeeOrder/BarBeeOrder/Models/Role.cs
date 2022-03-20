@@ -9,13 +9,13 @@ namespace BarBeeOrder.Models
     {
         public Role()
         {
-            Accounts = new HashSet<Account>();
+            Customers = new HashSet<Customer>();
         }
 
         public int RoleId { get; set; }
         public string RoleName { get; set; }
         public string Description { get; set; }
 
-        public virtual ICollection<Account> Accounts { get; set; }
+        public virtual ICollection<Customer> Customers { get; set; }
     }
 }

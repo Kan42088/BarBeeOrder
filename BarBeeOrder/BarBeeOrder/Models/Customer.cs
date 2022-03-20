@@ -10,6 +10,7 @@ namespace BarBeeOrder.Models
         public Customer()
         {
             Orders = new HashSet<Order>();
+            Posts = new HashSet<Post>();
         }
 
         public int CustomerId { get; set; }
@@ -25,7 +26,10 @@ namespace BarBeeOrder.Models
         public DateTime? CreatedDate { get; set; }
         public bool IsDeteted { get; set; }
         public string Salt { get; set; }
+        public int RoleId { get; set; }
 
+        public virtual Role Role { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Post> Posts { get; set; }
     }
 }

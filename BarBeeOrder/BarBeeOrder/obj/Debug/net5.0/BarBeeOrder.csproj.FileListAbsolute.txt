@@ -1991,3 +1991,16 @@ E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Shared\Components\NumberCart\Default.cshtml.g.cs
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Checkout\Index.cshtml.g.cs
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Checkout\Success.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\AdminOrders\Create.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\AdminOrders\Delete.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\AdminOrders\Details.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\AdminOrders\Edit.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\AdminOrders\Index.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\System.Web.Mvc.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\System.Web.Razor.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\System.Web.Helpers.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\System.Web.WebPages.Deployment.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\System.Web.WebPages.Razor.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\System.Web.WebPages.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\Microsoft.Web.Infrastructure.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Error\Error.cshtml.g.cs
