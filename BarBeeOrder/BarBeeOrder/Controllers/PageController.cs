@@ -25,7 +25,7 @@ namespace BarBeeOrder.Controllers
             pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
             ViewData["MenuPages"] = pages;
             List<Category> categories = new List<Category>();
-            categories = _context.Categories.AsNoTracking().Where(c => c.IsDeleted == false && c.Published == true).OrderBy(x => x.Ordering).ToList();
+            categories = _context.Categories.AsNoTracking().Where(c => c.IsDeleted == false && c.Published == true && c.Type == 1).OrderBy(x => x.Ordering).ToList();
             ViewData["MenuCategories"] = categories;
             if (id == null)
             {

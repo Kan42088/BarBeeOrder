@@ -40,7 +40,7 @@
                                     {
                                         foreach (var item in (List<Category>)ViewData["MenuCategories"])
                                         {
-                                            <option value="@item.CategoryId">@item.Name</option>
+                                            <option value="@item.CategoryId"><a href="/cua-hang-@item.Alias}">@item.Name</a> </option>
                                         }
                                     }
                                 </select>
