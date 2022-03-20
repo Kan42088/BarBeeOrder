@@ -39,21 +39,22 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        var pageNumber = page ?? 1;
+                        var pageSize = 5; //Show 10 rows every time
 
+                        List<Order> lsOrders = new List<Order>();
+                        lsOrders = _context.Orders.AsNoTracking().Where(x => x.Deleted == false).Include(o => o.Customer).Include(o => o.Payment).Include(o => o.Su).Include(o => o.TransactionStatus).OrderByDescending(x => x.OrderDate).ToList();
+                        PagedList<Order> models = new PagedList<Order>(lsOrders.AsQueryable(), pageNumber, pageSize);
+                        ViewBag.CurrentPage = pageNumber;
+                        ViewBag.cStatus = new SelectList(_context.TransactionStatuses, "TransactionStatusId", "Status");
+                        return View(models);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    var pageNumber = page ?? 1;
-                    var pageSize = 5; //Show 10 rows every time
-
-                    List<Order> lsOrders = new List<Order>();
-                    lsOrders = _context.Orders.AsNoTracking().Where(x => x.Deleted == false).Include(o => o.Customer).Include(o => o.Payment).Include(o => o.Su).Include(o => o.TransactionStatus).OrderByDescending(x => x.OrderDate).ToList();
-                    PagedList<Order> models = new PagedList<Order>(lsOrders.AsQueryable(), pageNumber, pageSize);
-                    ViewBag.CurrentPage = pageNumber;
-                    ViewBag.cStatus = new SelectList(_context.TransactionStatuses, "TransactionStatusId", "Status");
-                    return View(models);
+                    
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -81,32 +82,33 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id == null)
+                        {
+                            return NotFound();
+                        }
 
+                        var order = await _context.Orders
+                            .Include(o => o.Customer)
+                            .Include(o => o.Payment)
+                            .Include(o => o.Su)
+                            .Include(o => o.TransactionStatus)
+                            .FirstOrDefaultAsync(m => m.OrderId == id);
+                        if (order == null)
+                        {
+                            return NotFound();
+                        }
+
+                        var ChitietDonHang = _context.OrderDetails.AsNoTracking().Include(x => x.Product).Where(x => x.OrderId == order.OrderId).OrderBy(x => x.OrderDetailId).ToList();
+                        ViewBag.ChitietDonHang = ChitietDonHang;
+
+                        return View(order);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var order = await _context.Orders
-                        .Include(o => o.Customer)
-                        .Include(o => o.Payment)
-                        .Include(o => o.Su)
-                        .Include(o => o.TransactionStatus)
-                        .FirstOrDefaultAsync(m => m.OrderId == id);
-                    if (order == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var ChitietDonHang = _context.OrderDetails.AsNoTracking().Include(x => x.Product).Where(x => x.OrderId == order.OrderId).OrderBy(x => x.OrderDetailId).ToList();
-                    ViewBag.ChitietDonHang = ChitietDonHang;
-
-                    return View(order);
+                   
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -168,55 +170,56 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        var order = _context.Orders.FirstOrDefault(o => o.OrderId == id);
+                        if (id == null)
+                        {
+                            _notyfService.Error("Thay đổi trạng thái thất bại!");
+                            return RedirectToAction("Index", "AdminOrders");
+                        }
+                        if (ModelState.IsValid)
+                        {
+                            try
+                            {
+                                order.TransactionStatusId = cStatus;
+                                //1:cho lay
+                                //2:cho xac nhan
+                                //3:dang giao
+                                //4:giao thanh cong
+                                //5:da huy
+                                //6:tra hang
+                                if (cStatus == 4)
+                                {
+                                    order.ShipDate = DateTime.Now;
+                                    order.PaymentDate = DateTime.Now;
+                                }
 
+                                _context.Update(order);
+                                await _context.SaveChangesAsync();
+                                _notyfService.Success("Thay đổi trạng thái thành công!");
+                            }
+                            catch (DbUpdateConcurrencyException)
+                            {
+                                if (!OrderExists(order.OrderId))
+                                {
+                                    _notyfService.Error("Không tìm thấy đơn hàng!");
+                                    return RedirectToAction("Index", "AdminOrders");
+                                }
+                                else
+                                {
+
+                                }
+                            }
+                            return RedirectToAction(nameof(Index));
+                        }
+
+                        return RedirectToAction("Index", "AdminOrders");
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    var order = _context.Orders.FirstOrDefault(o => o.OrderId == id);
-                    if (id == null)
-                    {
-                        _notyfService.Error("Thay đổi trạng thái thất bại!");
-                        return RedirectToAction("Index", "AdminOrders");
-                    }
-                    if (ModelState.IsValid)
-                    {
-                        try
-                        {
-                            order.TransactionStatusId = cStatus;
-                            //1:cho lay
-                            //2:cho xac nhan
-                            //3:dang giao
-                            //4:giao thanh cong
-                            //5:da huy
-                            //6:tra hang
-                            if (cStatus == 4)
-                            {
-                                order.ShipDate = DateTime.Now;
-                                order.PaymentDate = DateTime.Now;
-                            }
-
-                            _context.Update(order);
-                            await _context.SaveChangesAsync();
-                            _notyfService.Success("Thay đổi trạng thái thành công!");
-                        }
-                        catch (DbUpdateConcurrencyException)
-                        {
-                            if (!OrderExists(order.OrderId))
-                            {
-                                _notyfService.Error("Không tìm thấy đơn hàng!");
-                                return RedirectToAction("Index", "AdminOrders");
-                            }
-                            else
-                            {
-
-                            }
-                        }
-                        return RedirectToAction(nameof(Index));
-                    }
-
-                    return RedirectToAction("Index", "AdminOrders");
+                   
 
 
                 }
@@ -268,37 +271,38 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id != order.OrderId)
+                        {
+                            return RedirectToAction("Index", "AdminOrders");
+                        }
 
+                        if (ModelState.IsValid)
+                        {
+                            try
+                            {
+                                _context.Update(order);
+                                await _context.SaveChangesAsync();
+                            }
+                            catch (DbUpdateConcurrencyException)
+                            {
+                                if (!OrderExists(order.OrderId))
+                                {
+                                    return RedirectToAction("Index", "AdminOrders");
+                                }
+                                else
+                                {
+                                    throw;
+                                }
+                            }
+                            return RedirectToAction(nameof(Index));
+                        }
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id != order.OrderId)
-                    {
-                        return RedirectToAction("Index", "AdminOrders");
-                    }
-
-                    if (ModelState.IsValid)
-                    {
-                        try
-                        {
-                            _context.Update(order);
-                            await _context.SaveChangesAsync();
-                        }
-                        catch (DbUpdateConcurrencyException)
-                        {
-                            if (!OrderExists(order.OrderId))
-                            {
-                                return RedirectToAction("Index", "AdminOrders");
-                            }
-                            else
-                            {
-                                throw;
-                            }
-                        }
-                        return RedirectToAction(nameof(Index));
-                    }
+                    
                     ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerId);
                     ViewData["PaymentId"] = new SelectList(_context.PaymentIds, "PaymentId1", "PaymentId1", order.PaymentId);
                     ViewData["Suid"] = new SelectList(_context.ShippingUnits, "Suid", "Suid", order.Suid);
@@ -331,31 +335,32 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id == null)
+                        {
+                            _notyfService.Error("Không tìm thấy đơn hàng!");
+                            return RedirectToAction("Index", "AdminOrders");
+                        }
 
+                        var order = await _context.Orders
+                            .Include(o => o.Customer)
+                            .Include(o => o.Payment)
+                            .Include(o => o.Su)
+                            .Include(o => o.TransactionStatus)
+                            .FirstOrDefaultAsync(m => m.OrderId == id);
+                        if (order == null)
+                        {
+                            _notyfService.Error("Không tìm thấy đơn hàng!");
+                            return RedirectToAction("Index", "AdminOrders");
+                        }
+
+                        return View(order);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id == null)
-                    {
-                        _notyfService.Error("Không tìm thấy đơn hàng!");
-                        return RedirectToAction("Index", "AdminOrders");
-                    }
-
-                    var order = await _context.Orders
-                        .Include(o => o.Customer)
-                        .Include(o => o.Payment)
-                        .Include(o => o.Su)
-                        .Include(o => o.TransactionStatus)
-                        .FirstOrDefaultAsync(m => m.OrderId == id);
-                    if (order == null)
-                    {
-                        _notyfService.Error("Không tìm thấy đơn hàng!");
-                        return RedirectToAction("Index", "AdminOrders");
-                    }
-
-                    return View(order);
+                    
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -386,6 +391,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         var order = await _context.Orders.FindAsync(id);
                         order.Deleted = true;
                         _context.Orders.Update(order);

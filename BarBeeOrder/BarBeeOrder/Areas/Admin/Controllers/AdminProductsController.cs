@@ -48,11 +48,11 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // GET: Admin/AdminProducts
         public async Task<IActionResult> Index(int? page, int CatID = 0)
         {
-            //for (int i = 0; i < 5; i++)
+            //for (int i = 0; i < 10; i++)
             //{
-            //   Product product = new Product();
-            //    product.ProductName = "Quả" + i;
-            //    product.Alias = Utilities.SEOUrl("Quả" + i);
+            //    Product product = new Product();
+            //    product.ProductName = "Quả " + i;
+            //    product.Alias = Utilities.SEOUrl("Quả " + i);
             //    product.Thumb = "default.jpg";
             //    product.Price = i * 10000;
             //    product.IsDelete = false;
@@ -62,24 +62,21 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             //    product.CategoryId = 1;
             //    product.CreatedDate = DateTime.Now;
             //    _context.Add(product);
+            //    Product product2 = new Product();
+            //    product2.ProductName = "Gạo" + i;
+            //    product2.Alias = Utilities.SEOUrl("Gạo" + i);
+            //    product2.Thumb = "default.jpg";
+            //    product2.Price = i * 10000;
+            //    product2.IsDelete = false;
+            //    product2.Active = true;
+            //    product2.HomeFlag = true;
+            //    product2.BestSellers = true;
+            //    product2.CategoryId = 2;
+            //    product2.CreatedDate = DateTime.Now;
+            //    _context.Add(product2);
             //    await _context.SaveChangesAsync();
             //}
-            //for (int i = 0; i < 5; i++)
-            //{
-            //    Product product = new Product();
-            //    product.ProductName = "Gạo" + i;
-            //    product.Alias = Utilities.SEOUrl("Quả" + i);
-            //    product.Thumb = "default.jpg";
-            //    product.Price = i * 10000;
-            //    product.IsDelete = false;
-            //    product.Active = true;
-            //    product.HomeFlag = true;
-            //    product.BestSellers = true;
-            //    product.CategoryId = 2;
-            //    product.CreatedDate = DateTime.Now;
-            //    _context.Add(product);
-            //    await _context.SaveChangesAsync();
-            //}
+
 
 
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
@@ -95,34 +92,35 @@ namespace BarBeeOrder.Areas.Admin.Controllers
 
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        var pageNumber = page ?? 1;
+                        var pageSize = 5; //Show 5 rows every time
+
+                        List<Product> lsProducts = new List<Product>();
+                        if (CatID != 0)
+                        {
+                            lsProducts = _context.Products.AsNoTracking().Where(x => x.CategoryId == CatID && x.IsDelete == false).Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
+                        }
+                        else
+                        {
+                            lsProducts = _context.Products.AsNoTracking().Where(x => x.IsDelete == false).Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
+                        }
+
+                        PagedList<Product> models = new PagedList<Product>(lsProducts.AsQueryable(), pageNumber, pageSize);
+                        ViewBag.CurrentCateID = CatID;
+                        ViewBag.CurrentPage = pageNumber;
+                        ViewData["DanhMuc"] = new SelectList(_context.Categories.Where(x => x.IsDeleted == false && x.Type == 1), "CategoryId", "Name", CatID);
+
+                        //var models = lsProducts.AsQueryable().ToPagedList(pageNumber, pageSize);
+
+                        return View(models);
 
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    var pageNumber = page ?? 1;
-                    var pageSize = 5; //Show 5 rows every time
-
-                    List<Product> lsProducts = new List<Product>();
-                    if (CatID != 0)
-                    {
-                        lsProducts = _context.Products.AsNoTracking().Where(x => x.CategoryId == CatID && x.IsDelete == false).Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
-                    }
-                    else
-                    {
-                        lsProducts = _context.Products.AsNoTracking().Where(x => x.IsDelete == false).Include(c => c.Category).Include(ap => ap.AttributePrices).OrderByDescending(x => x.ProductId).ToList();
-                    }
-
-                    PagedList<Product> models = new PagedList<Product>(lsProducts.AsQueryable(), pageNumber, pageSize);
-                    ViewBag.CurrentCateID = CatID;
-                    ViewBag.CurrentPage = pageNumber;
-                    ViewData["DanhMuc"] = new SelectList(_context.Categories.Where(x => x.IsDeleted == false && x.Type == 1), "CategoryId", "Name", CatID);
-
-                    //var models = lsProducts.AsQueryable().ToPagedList(pageNumber, pageSize);
-
-                    return View(models);
-
+                    
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -149,26 +147,27 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id == null)
+                        {
+                            return NotFound();
+                        }
 
+                        var product = await _context.Products
+                            .Include(p => p.Category)
+                            .FirstOrDefaultAsync(m => m.ProductId == id);
+                        if (product == null)
+                        {
+                            return NotFound();
+                        }
+
+                        return View(product);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var product = await _context.Products
-                        .Include(p => p.Category)
-                        .FirstOrDefaultAsync(m => m.ProductId == id);
-                    if (product == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return View(product);
+                   
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -196,14 +195,15 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
-
+                        ViewData["Account"] = khachhang;
+                        ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name");
+                        return View();
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name");
-                    return View();
+                    
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -235,36 +235,37 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (ModelState.IsValid)
+                        {
+                            product.ProductName = Utilities.ToTitleCase(product.ProductName);
+                            product.Alias = Utilities.SEOUrl(product.ProductName);
+                            if (fThumb != null)
+                            {
+                                string extension = Path.GetExtension(fThumb.FileName);
+                                string image = Utilities.SEOUrl(product.ProductName) + extension;
+                                product.Thumb = await Utilities.UploadFile(fThumb, @"products", image.ToLower());
+                            }
+                            if (string.IsNullOrEmpty(product.Thumb))
+                            {
+                                product.Thumb = "default.jpg";
+                            }
+                            product.ModifiedDate = DateTime.Now;
+                            product.CreatedDate = DateTime.Now;
 
+                            _context.Add(product);
+                            await _context.SaveChangesAsync();
+                            _notyfService.Success("Tạo mới thành công!");
+                            return RedirectToAction(nameof(Index));
+                        }
+                        ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
+                        return View(product);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (ModelState.IsValid)
-                    {
-                        product.ProductName = Utilities.ToTitleCase(product.ProductName);
-                        product.Alias = Utilities.SEOUrl(product.ProductName);
-                        if (fThumb != null)
-                        {
-                            string extension = Path.GetExtension(fThumb.FileName);
-                            string image = Utilities.SEOUrl(product.ProductName) + extension;
-                            product.Thumb = await Utilities.UploadFile(fThumb, @"products", image.ToLower());
-                        }
-                        if (string.IsNullOrEmpty(product.Thumb))
-                        {
-                            product.Thumb = "default.jpg";
-                        }
-                        product.ModifiedDate = DateTime.Now;
-                        product.CreatedDate = DateTime.Now;
-
-                        _context.Add(product);
-                        await _context.SaveChangesAsync();
-                        _notyfService.Success("Tạo mới thành công!");
-                        return RedirectToAction(nameof(Index));
-                    }
-                    ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
-                    return View(product);
+                    
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -292,24 +293,25 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id == null)
+                        {
+                            return NotFound();
+                        }
 
+                        var product = await _context.Products.FindAsync(id);
+                        if (product == null)
+                        {
+                            return NotFound();
+                        }
+                        ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
+                        return View(product);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var product = await _context.Products.FindAsync(id);
-                    if (product == null)
-                    {
-                        return NotFound();
-                    }
-                    ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
-                    return View(product);
+                   
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -341,55 +343,56 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id != product.ProductId)
+                        {
+                            return NotFound();
+                        }
 
+                        if (ModelState.IsValid)
+                        {
+                            try
+                            {
+                                product.ProductName = Utilities.ToTitleCase(product.ProductName);
+                                product.Alias = Utilities.SEOUrl(product.ProductName);
+                                if (fThumb != null)
+                                {
+                                    string extension = Path.GetExtension(fThumb.FileName);
+                                    string image = Utilities.SEOUrl(product.ProductName) + extension;
+                                    product.Thumb = await Utilities.UploadFile(fThumb, @"products", image.ToLower());
+                                }
+                                if (string.IsNullOrEmpty(product.Thumb))
+                                {
+                                    product.Thumb = "default.png";
+                                }
+                                product.ModifiedDate = DateTime.Now;
+
+                                _context.Update(product);
+                                _notyfService.Success("Chỉnh sửa thành công!");
+                                await _context.SaveChangesAsync();
+                            }
+                            catch (DbUpdateConcurrencyException)
+                            {
+                                if (!ProductExists(product.ProductId))
+                                {
+                                    _notyfService.Error("Chỉnh sửa thất bại!");
+                                    return NotFound();
+                                }
+                                else
+                                {
+                                    throw;
+                                }
+                            }
+                            return RedirectToAction(nameof(Index));
+                        }
+                        ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
+                        return View(product);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id != product.ProductId)
-                    {
-                        return NotFound();
-                    }
-
-                    if (ModelState.IsValid)
-                    {
-                        try
-                        {
-                            product.ProductName = Utilities.ToTitleCase(product.ProductName);
-                            product.Alias = Utilities.SEOUrl(product.ProductName);
-                            if (fThumb != null)
-                            {
-                                string extension = Path.GetExtension(fThumb.FileName);
-                                string image = Utilities.SEOUrl(product.ProductName) + extension;
-                                product.Thumb = await Utilities.UploadFile(fThumb, @"products", image.ToLower());
-                            }
-                            if (string.IsNullOrEmpty(product.Thumb))
-                            {
-                                product.Thumb = "default.png";
-                            }
-                            product.ModifiedDate = DateTime.Now;
-
-                            _context.Update(product);
-                            _notyfService.Success("Chỉnh sửa thành công!");
-                            await _context.SaveChangesAsync();
-                        }
-                        catch (DbUpdateConcurrencyException)
-                        {
-                            if (!ProductExists(product.ProductId))
-                            {
-                                _notyfService.Error("Chỉnh sửa thất bại!");
-                                return NotFound();
-                            }
-                            else
-                            {
-                                throw;
-                            }
-                        }
-                        return RedirectToAction(nameof(Index));
-                    }
-                    ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
-                    return View(product);
+                   
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -418,27 +421,28 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
+                        if (id == null)
+                        {
+                            return NotFound();
+                        }
 
+                        var product = await _context.Products
+                            .Include(p => p.Category)
+                            .FirstOrDefaultAsync(m => m.ProductId == id);
+                        if (product == null)
+                        {
+                            return NotFound();
+                        }
+
+                        return View(product);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
 
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var product = await _context.Products
-                        .Include(p => p.Category)
-                        .FirstOrDefaultAsync(m => m.ProductId == id);
-                    if (product == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return View(product);
+                   
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -468,6 +472,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         var product = await _context.Products.FindAsync(id);
                         product.IsDelete = true;
                         _context.Products.Update(product);

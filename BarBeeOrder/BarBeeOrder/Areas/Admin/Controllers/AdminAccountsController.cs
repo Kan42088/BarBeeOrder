@@ -10,6 +10,7 @@ using PagedList.Core;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using BarBeeOrder.Extension;
 using Microsoft.AspNetCore.Http;
+using BarBeeOrder.Helper;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -39,7 +40,10 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
-                        ViewData["QuyenTruyCap"] = new SelectList(_context.Roles, "RoleId", "RoleName");
+                        List<SelectListItem> listRoles = new List<SelectListItem>();
+                        listRoles.Add(new SelectListItem() { Text = "Admin", Value = "1" });
+                        listRoles.Add(new SelectListItem() { Text = "Nhân viên", Value = "3" });
+                        ViewData["QuyenTruyCap"] = listRoles;
 
                         List<SelectListItem> listStatus = new List<SelectListItem>();
                         listStatus.Add(new SelectListItem() { Text = "Hoạt động", Value = "1" });
@@ -50,7 +54,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                         var pageSize = 5; //Show 5 rows every time
 
                         List<Customer> lsAccounts = new List<Customer>();
-                        if (RolesID != 0)
+                        if (RolesID != 0 && RolesID!= 2)
                         {
                             lsAccounts = _context.Customers.AsNoTracking()
                                 .Where(x => x.RoleId == RolesID && x.IsDeteted == false)
@@ -58,15 +62,18 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                                 .OrderByDescending(x => x.CustomerId)
                                 .ToList();
                         }
-                        else
+                        else if(RolesID != 2)
                         {
-                            lsAccounts = _context.Customers.AsNoTracking().Where(x => x.IsDeteted == false).Include(c => c.Role).OrderByDescending(x => x.CustomerId).ToList();
+                            lsAccounts = _context.Customers.AsNoTracking().Where(x => x.IsDeteted == false && x.RoleId != 2).Include(c => c.Role).OrderByDescending(x => x.CustomerId).ToList();
+                        }
+                        else{
+                            return RedirectToAction("Error", "Error", new { area = "" });
                         }
 
                         PagedList<Customer> models = new PagedList<Customer>(lsAccounts.AsQueryable(), pageNumber, pageSize);
                         ViewBag.CurrentRoleID = RolesID;
                         ViewBag.CurrentPage = pageNumber;
-
+                        ViewData["Account"] = khachhang;
                         //var models = _context.Accounts.Include(a => a.Roll).ToPagedList(pageNumber,pageSize);
                         return View(models);
                     }
@@ -115,7 +122,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                         {
                             return NotFound();
                         }
-
+                        ViewData["Account"] = khachhang;
                         return View(account);
                     }
                     catch
@@ -150,6 +157,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleName");
                         ViewBag.RollId = new SelectList(_context.Roles, "RoleId", "RoleName");
                         return View();
@@ -176,7 +184,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AccountId,Email,Password,Phone,Status,Fullname,RollId,CreatedDate,LastLogin")] Account account)
+        public async Task<IActionResult> Create([Bind("AccountId,Email,Password,Phone,Status,Fullname,RollId,CreatedDate,LastLogin")] Customer account)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
             if (taikhoanID != null)
@@ -192,14 +200,17 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     {
                         if (ModelState.IsValid)
                         {
+                            string salt = Utilities.GetRandomKey();
+                            account.Password = (account.Password + salt.Trim()).ToMD5();
                             account.CreatedDate = DateTime.Now;
-                            account.IsDelete = false;
+                            account.IsDeteted = false;
                             _context.Add(account);
                             await _context.SaveChangesAsync();
                             _notyfService.Success("Tạo tài khoản thành công!");
                             return RedirectToAction(nameof(Index));
                         }
-                        ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleId", account.RollId);
+                        ViewData["Account"] = khachhang;
+                        ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleId", account.RoleId);
                         return View(account);
                     }
                     catch
@@ -246,6 +257,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                             return NotFound();
                         }
                         ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleId", account.RoleId);
+                        ViewData["Account"] = khachhang;
                         return View(account);
                     }
                     catch
@@ -270,7 +282,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AccountId,Email,Password,Phone,Status,Fullname,RollId,CreatedDate,LastLogin")] Account account)
+        public async Task<IActionResult> Edit(int id, [Bind("AccountId,Email,Password,Phone,Status,Fullname,RollId,CreatedDate,LastLogin")] Customer account)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
             if (taikhoanID != null)
@@ -284,7 +296,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
-                        if (id != account.AccountId)
+                        if (id != account.CustomerId)
                         {
                             return NotFound();
                         }
@@ -293,13 +305,15 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                         {
                             try
                             {
+                                account.Password = (account.Password.Trim() + account.Salt.Trim()).ToMD5();
                                 _context.Update(account);
                                 _notyfService.Success("Cập nhật thành công!");
                                 await _context.SaveChangesAsync();
+                                ViewData["Account"] = khachhang;
                             }
                             catch (DbUpdateConcurrencyException)
                             {
-                                if (!AccountExists(account.AccountId))
+                                if (!AccountExists(account.CustomerId))
                                 {
                                     return NotFound();
                                 }
@@ -310,7 +324,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                             }
                             return RedirectToAction(nameof(Index));
                         }
-                        ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleId", account.RollId);
+                        ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleId", account.RoleId);
                         return View(account);
                     }
                     catch
@@ -357,7 +371,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                         {
                             return NotFound();
                         }
-
+                        ViewData["Account"] = khachhang;
                         return View(account);
                     }
                     catch
@@ -400,6 +414,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                         _context.Update(account);
                         await _context.SaveChangesAsync();
                         _notyfService.Warning("Đã xóa tài khoản!");
+                        ViewData["Account"] = khachhang;
                         return RedirectToAction(nameof(Index));
                     }
                     catch
