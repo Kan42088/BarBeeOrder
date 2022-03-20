@@ -1,0 +1,66 @@
+﻿@model BarBeeOrder.Models.Category
+
+@{
+    ViewData["Title"] = "Thông tin danh mục";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+            <span class="breadcrumb-item active">Chi tiết danh mục</span>
+        </nav>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Thông tin danh mục bài đăng</h4>
+        <div class="table-responsive">
+            <table class="product-info-table m-t-20">
+                <tbody>
+                    <tr>
+                        <td>ID:</td>
+                        <td class="text-dark font-weight-semibold">@Model.CategoryId</td>
+                    </tr>
+                    <tr>
+                        <td>Tên danh mục:</td>
+                        <td>@Model.Name</td>
+                    </tr>
+
+                    <tr>
+                        <td>Trạng thái:</td>
+                        <td>
+                            @if (Model.Published)
+                            {
+                                <div class="form-group d-flex align-items-center">
+                                    <div class="switch d-inline m-r-10">
+                                        <input type="checkbox" id="switch-4" disabled="" checked="">
+                                        <label for="switch-4"></label>
+                                    </div>
+                                    
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group d-flex align-items-center">
+                                    <div class="switch d-inline m-r-10">
+                                        <input type="checkbox" id="switch-4" disabled="">
+                                        <label for="switch-4"></label>
+                                    </div>
+                                    
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mô tả:</td>
+                        <td>@Model.Description</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

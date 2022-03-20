@@ -61,7 +61,12 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     try
                     {
                         var pageNumber = page ?? 1;
-                        var pageSize = 10; //Show 10 rows every time
+                        var pageSize = 5; //Show 10 rows every time
+
+                        List<SelectListItem> listStatus = new List<SelectListItem>();
+                        listStatus.Add(new SelectListItem() { Text = "Hoạt động", Value = "1" });
+                        listStatus.Add(new SelectListItem() { Text = "Không hoạt động", Value = "0" });
+                        ViewData["TrangThai"] = listStatus;
 
                         List<Category> lsCategories = new List<Category>();
                         lsCategories = _context.Categories.AsNoTracking().Where(x => x.IsDeleted == false && x.Type == 1).OrderByDescending(x => x.CategoryId).ToList();

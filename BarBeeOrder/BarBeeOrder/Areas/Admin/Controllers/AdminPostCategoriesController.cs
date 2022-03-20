@@ -6,28 +6,30 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
-using PagedList.Core;
 using AspNetCoreHero.ToastNotification.Abstractions;
-using BarBeeOrder.Extension;
+using PagedList.Core;
 using Microsoft.AspNetCore.Http;
+using System.IO;
 using BarBeeOrder.Helper;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class AdminAccountsController : Controller
+    public class AdminPostCategoriesController : Controller
     {
         private readonly BarBeeOrderContext _context;
         public INotyfService _notyfService { get; }
-        public AdminAccountsController(BarBeeOrderContext context, INotyfService notyfService)
+        public AdminPostCategoriesController(BarBeeOrderContext context, INotyfService notyfService)
         {
             _context = context;
             _notyfService = notyfService;
         }
 
-        // GET: Admin/AdminAccounts
-        public async Task<IActionResult> Index(int? page, int RolesID = 0)
+
+        // GET: Admin/AdminPostCategories
+        public async Task<IActionResult> Index(int? page)
         {
+           
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
             if (taikhoanID != null)
             {
@@ -36,66 +38,43 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                 {
                     if (khachhang.RoleId == 2)
                     {
-                        return RedirectToAction("Index", "Home", new {area = ""});
+                        return RedirectToAction("Index", "Home", new { area = "" });
                     }
                     try
                     {
-                        List<SelectListItem> listRoles = new List<SelectListItem>();
-                        listRoles.Add(new SelectListItem() { Text = "Admin", Value = "1" });
-                        listRoles.Add(new SelectListItem() { Text = "Nhân viên", Value = "3" });
-                        ViewData["QuyenTruyCap"] = listRoles;
+                        var pageNumber = page ?? 1;
+                        var pageSize = 5; //Show 10 rows every time
 
                         List<SelectListItem> listStatus = new List<SelectListItem>();
                         listStatus.Add(new SelectListItem() { Text = "Hoạt động", Value = "1" });
                         listStatus.Add(new SelectListItem() { Text = "Không hoạt động", Value = "0" });
                         ViewData["TrangThai"] = listStatus;
 
-                        var pageNumber = page ?? 1;
-                        var pageSize = 5; //Show 5 rows every time
-
-                        List<Customer> lsAccounts = new List<Customer>();
-                        if (RolesID != 0 && RolesID!= 2)
-                        {
-                            lsAccounts = _context.Customers.AsNoTracking()
-                                .Where(x => x.RoleId == RolesID && x.IsDeteted == false)
-                                .Include(c => c.Role)
-                                .OrderByDescending(x => x.CustomerId)
-                                .ToList();
-                        }
-                        else if(RolesID != 2)
-                        {
-                            lsAccounts = _context.Customers.AsNoTracking().Where(x => x.IsDeteted == false && x.RoleId != 2).Include(c => c.Role).OrderByDescending(x => x.CustomerId).ToList();
-                        }
-                        else{
-                            return RedirectToAction("Error", "Error", new { area = "" });
-                        }
-
-                        PagedList<Customer> models = new PagedList<Customer>(lsAccounts.AsQueryable(), pageNumber, pageSize);
-                        ViewBag.CurrentRoleID = RolesID;
+                        List<Category> lsCategories = new List<Category>();
+                        lsCategories = _context.Categories.AsNoTracking().Where(x => x.IsDeleted == false && x.Type == 2).OrderByDescending(x => x.CategoryId).ToList();
+                        PagedList<Category> models = new PagedList<Category>(lsCategories.AsQueryable(), pageNumber, pageSize);
                         ViewBag.CurrentPage = pageNumber;
                         ViewData["Account"] = khachhang;
-                        //var models = _context.Accounts.Include(a => a.Roll).ToPagedList(pageNumber,pageSize);
                         return View(models);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    
-
 
                 }
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
-            
+
+
         }
 
-        // GET: Admin/AdminAccounts/Details/5
+        // GET: Admin/AdminPostCategories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
@@ -115,34 +94,32 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                             return NotFound();
                         }
 
-                        var account = await _context.Customers
-                            .Include(a => a.Role)
-                            .FirstOrDefaultAsync(m => m.CustomerId == id);
-                        if (account == null)
+                        var category = await _context.Categories
+                            .FirstOrDefaultAsync(m => m.CategoryId == id);
+                        if (category == null)
                         {
                             return NotFound();
                         }
                         ViewData["Account"] = khachhang;
-                        return View(account);
+                        return View(category);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    
+
 
                 }
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            /////////////
 
         }
 
-        // GET: Admin/AdminAccounts/Create
+        // GET: Admin/AdminPostCategories/Create
         public IActionResult Create()
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
@@ -158,33 +135,31 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     try
                     {
                         ViewData["Account"] = khachhang;
-                        ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleName");
-                        ViewBag.RollId = new SelectList(_context.Roles, "RoleId", "RoleName");
                         return View();
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                   
+
 
                 }
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            /////////////
-            
+            //////////
+
         }
 
-        // POST: Admin/AdminAccounts/Create
+        // POST: Admin/AdminPostCategories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerId,Email,Password,Phone,Status,Fullname,RoleId,CreatedDate,LastLogin")] Customer account)
+        public async Task<IActionResult> Create([Bind("CategoryId,Name,Description,ParrentId,Levels,Ordering,Published,Title,Cover,Type,IsDeleted,Thumb")] Category category, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
             if (taikhoanID != null)
@@ -198,41 +173,46 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         if (ModelState.IsValid)
                         {
-                            string salt = Utilities.GetRandomKey();
-                            account.Password = (account.Password + salt.Trim()).ToMD5();
-                            account.Salt = salt;
-                            account.CreatedDate = DateTime.Now;
-                            account.IsDeteted = false;
-                            _context.Add(account);
+                            category.Type = 2;
+                            if (fThumb != null)
+                            {
+                                string extension = Path.GetExtension(fThumb.FileName);
+                                string image = Utilities.SEOUrl(category.Name) + extension;
+                                category.Thumb = await Utilities.UploadFile(fThumb, @"categories", image.ToLower());
+                            }
+                            if (string.IsNullOrEmpty(category.Thumb))
+                            {
+                                category.Thumb = "default.jpg";
+                            }
+                            _context.Add(category);
                             await _context.SaveChangesAsync();
-                            _notyfService.Success("Tạo tài khoản thành công!");
+                            _notyfService.Success("Tạo mới thành công!");
                             return RedirectToAction(nameof(Index));
                         }
-                        ViewData["Account"] = khachhang;
-                        ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleName", account.RoleId);
-                        return View(account);
+                        return View(category);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    
+
 
 
                 }
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            /////////////
-            
+            //////////
+
         }
 
-        // GET: Admin/AdminAccounts/Edit/5
+        // GET: Admin/AdminPostCategories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
@@ -247,44 +227,41 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         if (id == null)
                         {
                             return NotFound();
                         }
 
-                        var account = await _context.Customers.FindAsync(id);
-                        
-                        if (account == null)
+                        var category = await _context.Categories.FindAsync(id);
+                        if (category == null)
                         {
                             return NotFound();
                         }
-                        ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleName", account.RoleId);
-                        ViewData["Account"] = khachhang;
-                        return View(account);
+                        return View(category);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                   
 
 
                 }
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            
-        }
+            //////////
 
-        // POST: Admin/AdminAccounts/Edit/5
+        }
+        // POST: Admin/AdminPostCategories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,Email,Password,Salt,Phone,Status,Fullname,RoleId,CreatedDate,LastLogin")] Customer account)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,Name,Description,ParrentId,Levels,Ordering,Published,Title,Cover,Type,IsDeleted,Thumb")] Category category, Microsoft.AspNetCore.Http.IFormFile fThumb)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
             if (taikhoanID != null)
@@ -298,7 +275,8 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
-                        if (id != account.CustomerId)
+                        ViewData["Account"] = khachhang;
+                        if (id != category.CategoryId)
                         {
                             return NotFound();
                         }
@@ -307,23 +285,23 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                         {
                             try
                             {
-                                if (string.IsNullOrEmpty(account.Password))
+                                if (fThumb != null)
                                 {
-                                    var accountcheck =  _context.Customers.AsNoTracking().FirstOrDefault(x=> x.CustomerId==id);
-                                    account.Password = accountcheck.Password;
+                                    string extension = Path.GetExtension(fThumb.FileName);
+                                    string image = Utilities.SEOUrl(category.Name) + extension;
+                                    category.Thumb = await Utilities.UploadFile(fThumb, @"categories", image.ToLower());
                                 }
-                                else
+                                if (string.IsNullOrEmpty(category.Thumb))
                                 {
-                                    account.Password = (account.Password.Trim() + account.Salt.Trim()).ToMD5();
+                                    category.Thumb = "default.jpg";
                                 }
-                                _context.Update(account);
-                                _notyfService.Success("Cập nhật thành công!");
+                                _context.Update(category);
+                                _notyfService.Success("Chỉnh sửa thành công!");
                                 await _context.SaveChangesAsync();
-                                ViewData["Account"] = khachhang;
                             }
                             catch (DbUpdateConcurrencyException)
                             {
-                                if (!AccountExists(account.CustomerId))
+                                if (!CategoryExists(category.CategoryId))
                                 {
                                     return NotFound();
                                 }
@@ -334,27 +312,26 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                             }
                             return RedirectToAction(nameof(Index));
                         }
-                        ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleName", account.RoleId);
-                        return View(account);
+                        return View(category);
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    
+
 
                 }
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            /////////////
-            
+            //////////
+
         }
 
-        // GET: Admin/AdminAccounts/Delete/5
+        // GET: Admin/AdminPostCategories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
@@ -369,40 +346,40 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
+                        ViewData["Account"] = khachhang;
                         if (id == null)
                         {
                             return NotFound();
                         }
 
-                        var account = await _context.Customers
-                            .Include(a => a.Role)
-                            .FirstOrDefaultAsync(m => m.CustomerId == id);
-                        if (account == null)
+                        var category = await _context.Categories
+                            .FirstOrDefaultAsync(m => m.CategoryId == id);
+                        if (category == null)
                         {
                             return NotFound();
                         }
-                        ViewData["Account"] = khachhang;
-                        return View(account);
+
+                        return View(category);
+
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    
 
 
                 }
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            /////////////
-            
+            //////////
+
         }
 
-        // POST: Admin/AdminAccounts/Delete/5
+        // POST: Admin/AdminPostCategories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -419,34 +396,34 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
-                        var account = await _context.Customers.FindAsync(id);
-                        account.IsDeteted = true;
-                        _context.Update(account);
-                        await _context.SaveChangesAsync();
-                        _notyfService.Warning("Đã xóa tài khoản!");
                         ViewData["Account"] = khachhang;
+                        var category = await _context.Categories.FindAsync(id);
+                        category.IsDeleted = true;
+                        _context.Categories.Remove(category);
+                        await _context.SaveChangesAsync();
+                        _notyfService.Warning("Xóa thành công!");
                         return RedirectToAction(nameof(Index));
                     }
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    
+
 
                 }
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            /////////////
-            
+            //////////
+
         }
 
-        private bool AccountExists(int id)
+        private bool CategoryExists(int id)
         {
-            return _context.Customers.Any(e => e.CustomerId == id);
+            return _context.Categories.Any(e => e.CategoryId == id);
         }
     }
 }

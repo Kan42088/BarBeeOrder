@@ -8,8 +8,8 @@
     <div class="header-sub-title">
         <nav class="breadcrumb breadcrumb-dash">
             <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
-            <a asp-area="Admin" asp-controller="AdminCategories" asp-action="Index" class="breadcrumb-item">Quản lí danh mục sản phẩm</a>
-            <span class="breadcrumb-item active">Xóa danh mục sản phẩm </span>
+            <a asp-area="Admin" asp-controller="AdminPostCategories" asp-action="Index" class="breadcrumb-item">Quản lí danh mục bài đăng</a>
+            <span class="breadcrumb-item active">Xóa danh mục bài đăng </span>
         </nav>
     </div>
 </div>
@@ -37,7 +37,7 @@
                     <tr>
                         <td>Xóa danh mục</td>
                         <td>
-                            <form asp-controller="AdminCategories" asp-action="Delete" asp-route-id="@Model.CategoryId">
+                            <form asp-controller="AdminPostCategories" asp-action="Delete" asp-route-id="@Model.CategoryId">
                                 <input type="hidden" asp-for="CategoryId" />
                                 <input type="submit" value="Xác nhận xóa" class="btn btn-danger" />
                             </form>
