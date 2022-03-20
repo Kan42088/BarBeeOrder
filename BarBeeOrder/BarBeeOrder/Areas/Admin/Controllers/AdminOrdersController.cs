@@ -6,48 +6,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
-using PagedList.Core;
 using AspNetCoreHero.ToastNotification.Abstractions;
-using System.IO;
-using BarBeeOrder.Helper;
+using PagedList.Core;
 using Microsoft.AspNetCore.Http;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class AdminCategoriesController : Controller
+    public class AdminOrdersController : Controller
     {
         private readonly BarBeeOrderContext _context;
+
         public INotyfService _notyfService { get; }
-        public AdminCategoriesController(BarBeeOrderContext context, INotyfService notyfService)
+        public AdminOrdersController(BarBeeOrderContext context, INotyfService notyfService)
         {
             _context = context;
             _notyfService = notyfService;
         }
 
-        // GET: Admin/AdminCategories
+        // GET: Admin/AdminOrders
         public async Task<IActionResult> Index(int? page)
         {
-            //var taikhoanID = HttpContext.Session.GetString("CustomerId");
-            //if (taikhoanID != null)
-            //{
-            //    var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
-            //    if (khachhang != null)
-            //    {
-            //        if (khachhang.RoleId == 2)
-            //        {
-            //            return RedirectToAction("Index", "Home", new { area = "" });
-            //        }
-
-
-
-            //    }
-            //    return RedirectToAction("Index", "Home", new { area = "" });
-            //}
-            //else
-            //{
-            //    return RedirectToAction("Index", "Home", new { area = "" });
-            //}
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
             if (taikhoanID != null)
             {
@@ -67,13 +46,15 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
                     var pageNumber = page ?? 1;
-                    var pageSize = 10; //Show 10 rows every time
+                    var pageSize = 5; //Show 10 rows every time
 
-                    List<Category> lsCategories = new List<Category>();
-                    lsCategories = _context.Categories.AsNoTracking().Where(x => x.IsDeleted == false && x.Type == 1).OrderByDescending(x => x.CategoryId).ToList();
-                    PagedList<Category> models = new PagedList<Category>(lsCategories.AsQueryable(), pageNumber, pageSize);
+                    List<Order> lsOrders = new List<Order>();
+                    lsOrders = _context.Orders.AsNoTracking().Where(x => x.Deleted == false).Include(o => o.Customer).Include(o => o.Payment).Include(o => o.Su).Include(o => o.TransactionStatus).OrderByDescending(x => x.OrderDate).ToList();
+                    PagedList<Order> models = new PagedList<Order>(lsOrders.AsQueryable(), pageNumber, pageSize);
                     ViewBag.CurrentPage = pageNumber;
+                    ViewBag.cStatus = new SelectList(_context.TransactionStatuses, "TransactionStatusId", "Status");
                     return View(models);
+
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
@@ -81,12 +62,11 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             {
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
-            
 
             
         }
 
-        // GET: Admin/AdminCategories/Details/5
+        // GET: Admin/AdminOrders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
@@ -112,14 +92,21 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                         return NotFound();
                     }
 
-                    var category = await _context.Categories
-                        .FirstOrDefaultAsync(m => m.CategoryId == id);
-                    if (category == null)
+                    var order = await _context.Orders
+                        .Include(o => o.Customer)
+                        .Include(o => o.Payment)
+                        .Include(o => o.Su)
+                        .Include(o => o.TransactionStatus)
+                        .FirstOrDefaultAsync(m => m.OrderId == id);
+                    if (order == null)
                     {
                         return NotFound();
                     }
 
-                    return View(category);
+                    var ChitietDonHang = _context.OrderDetails.AsNoTracking().Include(x => x.Product).Where(x => x.OrderId == order.OrderId).OrderBy(x => x.OrderDetailId).ToList();
+                    ViewBag.ChitietDonHang = ChitietDonHang;
+
+                    return View(order);
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -128,49 +115,46 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             {
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
+
             
         }
 
-        // GET: Admin/AdminCategories/Create
+        // GET: Admin/AdminOrders/Create
         public IActionResult Create()
         {
-            var taikhoanID = HttpContext.Session.GetString("CustomerId");
-            if (taikhoanID != null)
-            {
-                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
-                if (khachhang != null)
-                {
-                    if (khachhang.RoleId == 2)
-                    {
-                        return RedirectToAction("Index", "Home", new { area = "" });
-                    }
-                    try
-                    {
-
-                    }
-                    catch
-                    {
-                        return RedirectToAction("Error", "Error", new { area = "" });
-                    }
-                    return View();
-
-                }
-                return RedirectToAction("Index", "Home", new { area = "" });
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home", new { area = "" });
-            }
-            //////////
-            
+            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId");
+            ViewData["PaymentId"] = new SelectList(_context.PaymentIds, "PaymentId1", "PaymentId1");
+            ViewData["Suid"] = new SelectList(_context.ShippingUnits, "Suid", "Suid");
+            ViewData["TransactionStatusId"] = new SelectList(_context.TransactionStatuses, "TransactionStatusId", "TransactionStatusId");
+            return View();
         }
 
-        // POST: Admin/AdminCategories/Create
+        // POST: Admin/AdminOrders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,Name,Description,ParrentId,Levels,Ordering,Published,Title,Cover,Type,IsDeleted,Thumb")] Category category, Microsoft.AspNetCore.Http.IFormFile fThumb)
+        public async Task<IActionResult> Create([Bind("OrderId,CustomerId,OrderDate,ShipDate,TransactionStatusId,Deleted,Paid,PaymentDate,TotalMoney,PaymentId,Address,Note,Suid")] Order order)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(order);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerId);
+            ViewData["PaymentId"] = new SelectList(_context.PaymentIds, "PaymentId1", "PaymentId1", order.PaymentId);
+            ViewData["Suid"] = new SelectList(_context.ShippingUnits, "Suid", "Suid", order.Suid);
+            ViewData["TransactionStatusId"] = new SelectList(_context.TransactionStatuses, "TransactionStatusId", "TransactionStatusId", order.TransactionStatusId);
+            return View(order);
+        }
+
+        // POST: Admin/AdminOrders/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeStatus(int id, int cStatus)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
             if (taikhoanID != null)
@@ -189,26 +173,50 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     catch
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    var order = _context.Orders.FirstOrDefault(o => o.OrderId == id);
+                    if (id == null)
+                    {
+                        _notyfService.Error("Thay đổi trạng thái thất bại!");
+                        return RedirectToAction("Index", "AdminOrders");
                     }
                     if (ModelState.IsValid)
                     {
-                        category.Type = 1;
-                        if (fThumb != null)
+                        try
                         {
-                            string extension = Path.GetExtension(fThumb.FileName);
-                            string image = Utilities.SEOUrl(category.Name) + extension;
-                            category.Thumb = await Utilities.UploadFile(fThumb, @"categories", image.ToLower());
+                            order.TransactionStatusId = cStatus;
+                            //1:cho lay
+                            //2:cho xac nhan
+                            //3:dang giao
+                            //4:giao thanh cong
+                            //5:da huy
+                            //6:tra hang
+                            if (cStatus == 4)
+                            {
+                                order.ShipDate = DateTime.Now;
+                                order.PaymentDate = DateTime.Now;
+                            }
+
+                            _context.Update(order);
+                            await _context.SaveChangesAsync();
+                            _notyfService.Success("Thay đổi trạng thái thành công!");
                         }
-                        if (string.IsNullOrEmpty(category.Thumb))
+                        catch (DbUpdateConcurrencyException)
                         {
-                            category.Thumb = "default.jpg";
+                            if (!OrderExists(order.OrderId))
+                            {
+                                _notyfService.Error("Không tìm thấy đơn hàng!");
+                                return RedirectToAction("Index", "AdminOrders");
+                            }
+                            else
+                            {
+
+                            }
                         }
-                        _context.Add(category);
-                        await _context.SaveChangesAsync();
-                        _notyfService.Success("Tạo mới thành công!");
                         return RedirectToAction(nameof(Index));
                     }
-                    return View(category);
+
+                    return RedirectToAction("Index", "AdminOrders");
 
 
                 }
@@ -218,60 +226,35 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             {
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
-            //////////
+
             
         }
 
-        // GET: Admin/AdminCategories/Edit/5
+        // GET: Admin/AdminOrders/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            var taikhoanID = HttpContext.Session.GetString("CustomerId");
-            if (taikhoanID != null)
+            if (id == null)
             {
-                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
-                if (khachhang != null)
-                {
-                    if (khachhang.RoleId == 2)
-                    {
-                        return RedirectToAction("Index", "Home", new { area = "" });
-                    }
-                    try
-                    {
-
-                    }
-                    catch
-                    {
-                        return RedirectToAction("Error", "Error", new { area = "" });
-                    }
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var category = await _context.Categories.FindAsync(id);
-                    if (category == null)
-                    {
-                        return NotFound();
-                    }
-                    return View(category);
-
-                }
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return NotFound();
             }
-            else
+
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
             {
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return NotFound();
             }
-            //////////
-            
+            //ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerId);
+            //ViewData["PaymentId"] = new SelectList(_context.PaymentIds, "PaymentId1", "PaymentId1", order.PaymentId);
+            //ViewData["Suid"] = new SelectList(_context.ShippingUnits, "Suid", "Suid", order.Suid);
+            ViewData["TransactionStatusId"] = new SelectList(_context.TransactionStatuses, "TransactionStatusId", "TransactionStatusId", order.TransactionStatusId);
+            return View(order);
         }
-
-        // POST: Admin/AdminCategories/Edit/5
+        // POST: Admin/AdminOrders/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,Name,Description,ParrentId,Levels,Ordering,Published,Title,Cover,Type,IsDeleted,Thumb")] Category category, Microsoft.AspNetCore.Http.IFormFile fThumb)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderId,CustomerId,OrderDate,ShipDate,TransactionStatusId,Deleted,Paid,PaymentDate,TotalMoney,PaymentId,Address,Note,Suid")] Order order)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
             if (taikhoanID != null)
@@ -291,34 +274,23 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     {
                         return RedirectToAction("Error", "Error", new { area = "" });
                     }
-                    if (id != category.CategoryId)
+                    if (id != order.OrderId)
                     {
-                        return NotFound();
+                        return RedirectToAction("Index", "AdminOrders");
                     }
 
                     if (ModelState.IsValid)
                     {
                         try
                         {
-                            if (fThumb != null)
-                            {
-                                string extension = Path.GetExtension(fThumb.FileName);
-                                string image = Utilities.SEOUrl(category.Name) + extension;
-                                category.Thumb = await Utilities.UploadFile(fThumb, @"categories", image.ToLower());
-                            }
-                            if (string.IsNullOrEmpty(category.Thumb))
-                            {
-                                category.Thumb = "default.jpg";
-                            }
-                            _context.Update(category);
-                            _notyfService.Success("Chỉnh sửa thành công!");
+                            _context.Update(order);
                             await _context.SaveChangesAsync();
                         }
                         catch (DbUpdateConcurrencyException)
                         {
-                            if (!CategoryExists(category.CategoryId))
+                            if (!OrderExists(order.OrderId))
                             {
-                                return NotFound();
+                                return RedirectToAction("Index", "AdminOrders");
                             }
                             else
                             {
@@ -327,7 +299,11 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                         }
                         return RedirectToAction(nameof(Index));
                     }
-                    return View(category);
+                    ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerId);
+                    ViewData["PaymentId"] = new SelectList(_context.PaymentIds, "PaymentId1", "PaymentId1", order.PaymentId);
+                    ViewData["Suid"] = new SelectList(_context.ShippingUnits, "Suid", "Suid", order.Suid);
+                    ViewData["TransactionStatusId"] = new SelectList(_context.TransactionStatuses, "TransactionStatusId", "TransactionStatusId", order.TransactionStatusId);
+                    return View(order);
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -336,11 +312,11 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             {
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
-            //////////
-            
+
+           
         }
 
-        // GET: Admin/AdminCategories/Delete/5
+        // GET: Admin/AdminOrders/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
@@ -363,18 +339,23 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     if (id == null)
                     {
-                        return NotFound();
+                        _notyfService.Error("Không tìm thấy đơn hàng!");
+                        return RedirectToAction("Index", "AdminOrders");
                     }
 
-                    var category = await _context.Categories
-                        .FirstOrDefaultAsync(m => m.CategoryId == id);
-                    if (category == null)
+                    var order = await _context.Orders
+                        .Include(o => o.Customer)
+                        .Include(o => o.Payment)
+                        .Include(o => o.Su)
+                        .Include(o => o.TransactionStatus)
+                        .FirstOrDefaultAsync(m => m.OrderId == id);
+                    if (order == null)
                     {
-                        return NotFound();
+                        _notyfService.Error("Không tìm thấy đơn hàng!");
+                        return RedirectToAction("Index", "AdminOrders");
                     }
 
-                    return View(category);
-
+                    return View(order);
 
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
@@ -383,11 +364,12 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             {
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
-            //////////
+
+
             
         }
 
-        // POST: Admin/AdminCategories/Delete/5
+        // POST: Admin/AdminOrders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -404,9 +386,9 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     try
                     {
-                        var category = await _context.Categories.FindAsync(id);
-                        category.IsDeleted = true;
-                        _context.Categories.Remove(category);
+                        var order = await _context.Orders.FindAsync(id);
+                        order.Deleted = true;
+                        _context.Orders.Update(order);
                         await _context.SaveChangesAsync();
                         _notyfService.Warning("Xóa thành công!");
                         return RedirectToAction(nameof(Index));
@@ -417,6 +399,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     }
                     
 
+
                 }
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
@@ -424,13 +407,14 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             {
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
-            //////////
+
+
             
         }
 
-        private bool CategoryExists(int id)
+        private bool OrderExists(int id)
         {
-            return _context.Categories.Any(e => e.CategoryId == id);
+            return _context.Orders.Any(e => e.OrderId == id);
         }
     }
 }

@@ -17,7 +17,6 @@ namespace BarBeeOrder.Models
         {
         }
 
-        public virtual DbSet<Account> Accounts { get; set; }
         public virtual DbSet<Attribute> Attributes { get; set; }
         public virtual DbSet<AttributePrice> AttributePrices { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
@@ -44,38 +43,6 @@ namespace BarBeeOrder.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
-
-            modelBuilder.Entity<Account>(entity =>
-            {
-                entity.ToTable("Account");
-
-                entity.Property(e => e.AccountId).HasColumnName("AccountID");
-
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Email).HasMaxLength(100);
-
-                entity.Property(e => e.Fullname).HasMaxLength(250);
-
-                entity.Property(e => e.LastLogin).HasColumnType("datetime");
-
-                entity.Property(e => e.Password).HasMaxLength(50);
-
-                entity.Property(e => e.Phone)
-                    .HasMaxLength(12)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RollId).HasColumnName("RollID");
-
-                entity.Property(e => e.Salt)
-                    .HasMaxLength(10)
-                    .IsFixedLength(true);
-
-                entity.HasOne(d => d.Roll)
-                    .WithMany(p => p.Accounts)
-                    .HasForeignKey(d => d.RollId)
-                    .HasConstraintName("FK_Account_Role");
-            });
 
             modelBuilder.Entity<Attribute>(entity =>
             {
@@ -148,9 +115,17 @@ namespace BarBeeOrder.Models
                     .HasMaxLength(12)
                     .IsUnicode(false);
 
+                entity.Property(e => e.RoleId).HasColumnName("RoleID");
+
                 entity.Property(e => e.Salt)
                     .HasMaxLength(8)
                     .IsFixedLength(true);
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.Customers)
+                    .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Customer_Role");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -263,10 +238,10 @@ namespace BarBeeOrder.Models
 
                 entity.Property(e => e.Tittle).HasMaxLength(250);
 
-                entity.HasOne(d => d.Account)
+                entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Posts)
-                    .HasForeignKey(d => d.AccountId)
-                    .HasConstraintName("FK_Post_Account");
+                    .HasForeignKey(d => d.CustomerId)
+                    .HasConstraintName("FK_Post_Customer");
             });
 
             modelBuilder.Entity<Product>(entity =>

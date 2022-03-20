@@ -118,13 +118,14 @@ namespace BarBeeOrder.Controllers
                     return RedirectToAction("Login","Accounts", new { returnUrl = "/dat-hang-thanh-cong.html" });
                 }
                 var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
-                var donhang = _context.Orders.Where(x=> x.CustomerId== Convert.ToInt32(taikhoanID)).OrderByDescending(x=>x.OrderDate);  
+                var donhang = _context.Orders.Where(x=> x.CustomerId== Convert.ToInt32(taikhoanID)).Include(x=> x.Customer).OrderBy(x=>x.OrderDate).Last();
+                return View(donhang);
             }
             catch
             {
-
+                return View();
             }
-            return View();
+            
         }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BarBeeOrder.Models;
 using X.PagedList.Mvc.Core;
 using X.PagedList;
+using Microsoft.AspNetCore.Http;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -28,32 +29,88 @@ namespace BarBeeOrder.Areas.Admin.Controllers
             //var pageSize = 20;
             //var listCustomers = _context.Customers.AsNoTracking().OrderByDescending(x => x.CustomerId);
             //PagedList<Customer> models = listCustomers.ToPagedList<Customer>();
-            
 
-            var pageNumber = page ?? 1;
-            var pageSize = 10; //Show 10 rows every time
-            var models = this._context.Customers.ToPagedList(pageNumber, pageSize);
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
+            {
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+                        var pageNumber = page ?? 1;
+                        var pageSize = 10; //Show 10 rows every time
+                        var models = this._context.Customers.ToPagedList(pageNumber, pageSize);
+
+                        ViewBag.CurrentPage = pageNumber;
+                        return View(models);
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    
+
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
            
-            ViewBag.CurrentPage = pageNumber;
-            return View(models);
         }
 
         // GET: Admin/AdminCustomers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                return NotFound();
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+                        if (id == null)
+                        {
+                            return NotFound();
+                        }
+
+                        var customer = await _context.Customers
+                            .FirstOrDefaultAsync(m => m.CustomerId == id);
+                        if (customer == null)
+                        {
+                            return NotFound();
+                        }
+
+                        return View(customer);
+
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                   
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.CustomerId == id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            return View(customer);
+            
         }
 
         // GET: Admin/AdminCustomers/Create
@@ -69,29 +126,88 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CustomerId,Fullname,Birtday,Avatar,Address,Email,Phone,Password,Status,LastLogin,CreatedDate")] Customer customer)
         {
-            if (ModelState.IsValid)
+
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                _context.Add(customer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+                        if (ModelState.IsValid)
+                        {
+                            _context.Add(customer);
+                            await _context.SaveChangesAsync();
+                            return RedirectToAction(nameof(Index));
+                        }
+                        return View(customer);
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            return View(customer);
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+
+
+           
         }
 
         // GET: Admin/AdminCustomers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                return NotFound();
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+                        if (id == null)
+                        {
+                            return NotFound();
+                        }
+
+                        var customer = await _context.Customers.FindAsync(id);
+                        if (customer == null)
+                        {
+                            return NotFound();
+                        }
+                        return View(customer);
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    
+
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-            return View(customer);
+            
         }
 
         // POST: Admin/AdminCustomers/Edit/5
@@ -101,50 +217,106 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CustomerId,Fullname,Birtday,Avatar,Address,Email,Phone,Password,Status,LastLogin,CreatedDate")] Customer customer)
         {
-            if (id != customer.CustomerId)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                return NotFound();
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+                        if (id != customer.CustomerId)
+                        {
+                            return NotFound();
+                        }
+
+                        if (ModelState.IsValid)
+                        {
+                            try
+                            {
+                                _context.Update(customer);
+                                await _context.SaveChangesAsync();
+                            }
+                            catch (DbUpdateConcurrencyException)
+                            {
+                                if (!CustomerExists(customer.CustomerId))
+                                {
+                                    return NotFound();
+                                }
+                                else
+                                {
+                                    throw;
+                                }
+                            }
+                            return RedirectToAction(nameof(Index));
+                        }
+                        return View(customer);
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(customer);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CustomerExists(customer.CustomerId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(customer);
+            
         }
 
         // GET: Admin/AdminCustomers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
             {
-                return NotFound();
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+                        if (id == null)
+                        {
+                            return NotFound();
+                        }
+
+                        var customer = await _context.Customers
+                            .FirstOrDefaultAsync(m => m.CustomerId == id);
+                        if (customer == null)
+                        {
+                            return NotFound();
+                        }
+
+                        return View(customer);
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                   
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
 
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.CustomerId == id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            return View(customer);
+            
         }
 
         // POST: Admin/AdminCustomers/Delete/5
@@ -152,10 +324,37 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            if (taikhoanID != null)
+            {
+                var khachhang = _context.Customers.AsNoTracking().SingleOrDefault(x => x.CustomerId == Convert.ToInt32(taikhoanID));
+                if (khachhang != null)
+                {
+                    if (khachhang.RoleId == 2)
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "" });
+                    }
+                    try
+                    {
+                        var customer = await _context.Customers.FindAsync(id);
+                        _context.Customers.Remove(customer);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Error", "Error", new { area = "" });
+                    }
+                    
+
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+            
         }
 
         private bool CustomerExists(int id)

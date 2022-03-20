@@ -111,6 +111,7 @@ namespace BarBeeOrder.Controllers
                         Password = (taikhoan.Password + salt.Trim()).ToMD5(),
                         Status = true,
                         Salt = salt,
+                        RoleId = 2,
                         Address = "Hà Nội, Việt Nam",
                         CreatedDate = DateTime.Now
                     };
@@ -156,10 +157,12 @@ namespace BarBeeOrder.Controllers
         public async Task<IActionResult> Login(string returnUrl = null)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
+            
             if (taikhoanID != null)
             {
                 return RedirectToAction("Dashboard", "Accounts");
             }
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
@@ -190,22 +193,45 @@ namespace BarBeeOrder.Controllers
                     }
                     if (khachhang.Status == false)
                     {
-                        return RedirectToAction("ThongBao", "Accounts");
+                        _notyfService.Warning("Rất tiếc, tài khoản của bạn đã bị khóa!");
+                        return View(customer);
                     }
-
-                    HttpContext.Session.SetString("CustomerId", khachhang.CustomerId.ToString());
-                    var taikhoanID = HttpContext.Session.GetString("CustomerId");
-                    var claims = new List<Claim>
+                    if (khachhang.RoleId==2)
+                    {
+                        HttpContext.Session.SetString("CustomerId", khachhang.CustomerId.ToString());
+                        var taikhoanID = HttpContext.Session.GetString("CustomerId");
+                        var claims = new List<Claim>
                         {
                             new Claim(ClaimTypes.Name,khachhang.Fullname),
                             new Claim("CustomerId",khachhang.CustomerId.ToString())
                         };
-                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
-                    ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                    await HttpContext.SignInAsync(claimsPrincipal);
-                    _notyfService.Success("Đăng nhập thành công!");
+                        ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
+                        ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                        await HttpContext.SignInAsync(claimsPrincipal);
+                        _notyfService.Success("Đăng nhập thành công!");
+                        if (!string.IsNullOrEmpty(returnUrl))
+                        {
+                            return Redirect(returnUrl);
+                        }
+                        return RedirectToAction("Dashboard", "Accounts");
+                    }
+                    else
+                    {
+                        HttpContext.Session.SetString("CustomerId", khachhang.CustomerId.ToString());
+                        var taikhoanID = HttpContext.Session.GetString("CustomerId");
+                        var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name,khachhang.Fullname),
+                            new Claim("CustomerId",khachhang.CustomerId.ToString())
+                        };
+                        ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "login");
+                        ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                        await HttpContext.SignInAsync(claimsPrincipal);
+                        _notyfService.Success("Đăng nhập thành công!");
+                        return RedirectToAction("Index", "Home",new{area ="Admin" });
+                    }
                     
-                    return RedirectToAction("Dashboard", "Accounts");
+                    
                 }
             }
             catch

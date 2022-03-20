@@ -59,6 +59,15 @@ namespace BarBeeOrder
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                {
+                    context.Request.Path = "/Error/Error";
+                    await next();
+                }
+            });
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
@@ -68,6 +77,7 @@ namespace BarBeeOrder
 
             app.UseEndpoints(endpoints =>
             {
+                
                 endpoints.MapControllerRoute(
                   name: "areas",
                   pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"

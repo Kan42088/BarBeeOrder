@@ -1,6 +1,6 @@
 ﻿
 @using PagedList.Core;
-@model IPagedList<BarBeeOrder.Models.Account>
+@model IPagedList<BarBeeOrder.Models.Customer>
 
 @{
     ViewData["Title"] = "Danh sách tài khoản";
@@ -61,7 +61,7 @@
                         {
                             <tr>
                                 <td>
-                                    @item.AccountId
+                                    @item.CustomerId
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center">
@@ -72,7 +72,7 @@
                                 <td>@item.Email</td>
                                 <td>@item.Phone</td>
                                @* <td>@item.LastLogin</td>*@
-                                <td>@item.Roll.RoleName</td>
+                                <td>@item.Role.RoleName</td>
                                 <td>
                                     @if (item.Status)
                                     {
@@ -91,9 +91,9 @@
 
                                 </td>
                                 <td>
-                                    <a class="btn btn-success  btn-tone m-r-5" asp-area="Admin" asp-controller="AdminAccounts" asp-action="Details" asp-route-id="@item.AccountId">Chi tiết</a>
-                                    <a class="btn btn-primary  btn-tone m-r-5" asp-area="Admin" asp-controller="AdminAccounts" asp-action="Edit" asp-route-id="@item.AccountId">Sửa</a>
-                                    <a class="btn btn-danger btn-tone m-r-5" asp-area="Admin" asp-controller="AdminAccounts" asp-action="Delete" asp-route-id="@item.AccountId">Xóa</a>
+                                    <a class="btn btn-success  btn-tone m-r-5" asp-area="Admin" asp-controller="AdminAccounts" asp-action="Details" asp-route-id="@item.CustomerId">Chi tiết</a>
+                                    <a class="btn btn-primary  btn-tone m-r-5" asp-area="Admin" asp-controller="AdminAccounts" asp-action="Edit" asp-route-id="@item.CustomerId">Sửa</a>
+                                    <a class="btn btn-danger btn-tone m-r-5" asp-area="Admin" asp-controller="AdminAccounts" asp-action="Delete" asp-route-id="@item.CustomerId">Xóa</a>
                                 </td>
                             </tr>
                         }

@@ -1,0 +1,143 @@
+﻿@model BarBeeOrder.Models.Order
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng #" + Model.OrderId;
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    List<OrderDetail> orderDetails = ViewBag.ChitietDonHang;
+}
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+            <span class="breadcrumb-item active">Chi tiết đơn hàng</span>
+        </nav>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <div id="invoice" class="p-h-30">
+                <div class="m-t-15 lh-2">
+                    <div class="inline-block">
+                    </div>
+                    <div class="float-right">
+                        <h2>Đơn hàng #@Model.OrderId</h2>
+                    </div>
+                </div>
+                <div class="row m-t-20 lh-2">
+                    <div class="col-sm-9">
+                        <h3 class="p-l-10 m-t-10">Nguời nhận:</h3>
+                        <address class="p-l-10 m-t-10">
+                            <span class="font-weight-semibold text-dark">@Model.Customer.Fullname</span><br>
+                            <span>@Model.Address </span><br>
+
+                        </address>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="m-t-80">
+                            <div class="text-dark text-uppercase d-inline-block">
+                                <span class="font-weight-semibold text-dark">Đơn hàng số :</span>
+                            </div>
+                            <div class="float-right">#@Model.OrderId</div>
+                        </div>
+                        <div class="text-dark text-uppercase d-inline-block">
+                            <span class="font-weight-semibold text-dark">Ngày mua :</span>
+                        </div>
+                        <div class="float-right">@Model.OrderDate</div>
+                        <div class="text-dark text-uppercase d-inline-block">
+                            <span class="font-weight-semibold text-dark">Trạng thái :</span>
+                            <div class="float-right">
+                            @switch (Model.TransactionStatusId)
+                            {
+                                case 1:
+                                    <a>Chờ lấy hàng</a>
+                                    break;
+                                case 2:
+                                    <a>Chờ xác nhận</a>
+                                    break;
+                                case 3:
+                                    <a>Đang giao</a>
+                                    break;
+                                case 4:
+                                    <a>Đã giao thành công</a>
+                                    break;
+                                case 5:
+                                    <a>Đã hủy</a>
+                                    break;
+                                case 6:
+                                    <a>Trả hàng</a>
+                                    break;
+                            }
+                        </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="m-t-20">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Số lượng</th>
+                                    <th>Đơn giá</th>
+                                    <th>Tổng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (orderDetails != null && orderDetails.Count > 0)
+                                {
+                                    int i = 1;
+                                    foreach (var item in orderDetails)
+                                    {
+                                        <tr>
+                                            <th>@i</th>
+                                            <td>@item.Product.ProductName</td>
+                                            <td>@item.Quantity</td>
+                                            <td>@item.Price.Value.ToString("#,##0")VND</td>
+                                            <td>@item.TotalMoney.Value.ToString("#,##0")VND</td>
+                                        </tr>
+                                        i++;
+                                    }
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row m-t-30 lh-1-8">
+                        
+                        <div class="col-sm-12">
+                            <div class="float-right text-right">
+                                <h3><span class="font-weight-semibold text-dark">Tổng tiền :</span> @Model.TotalMoney.ToString("#,##0")VND</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-t-30 lh-2">
+                        <div class="col-sm-12">
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="border-bottom p-v-20">
+                                <strong>Ghi chú:</strong>
+                                <p class="text-opacity"><small>@Model.Note</small></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-v-20">
+                        <div class="col-sm-6">
+                            <img class="img-fluid text-opacity m-t-5" width="100" src="assets/images/logo/logo.png" alt="">
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            <small><span class="font-weight-semibold text-dark">Hotline:</span> (084) 377-402-009</small>
+                            <br>
+                            <small>support@barbeeorder.com</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
