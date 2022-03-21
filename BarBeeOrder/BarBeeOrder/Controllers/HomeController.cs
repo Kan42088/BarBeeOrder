@@ -54,7 +54,7 @@ namespace BarBeeOrder.Controllers
                 ViewBag.AllProducts = lsProducts.Take(8).ToList();
                 return View(model);
             }
-            catch
+            catch(Exception e)
             {
                 return RedirectToAction("Error", "Home");
             }

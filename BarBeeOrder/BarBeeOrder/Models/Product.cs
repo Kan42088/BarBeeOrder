@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -14,6 +15,7 @@ namespace BarBeeOrder.Models
         }
 
         public int ProductId { get; set; }
+        [Required(ErrorMessage = "Vui lòng không để trống!")]
         public string ProductName { get; set; }
         public string ShortDescription { get; set; }
         public int CategoryId { get; set; }
@@ -23,6 +25,7 @@ namespace BarBeeOrder.Models
         public string Video { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
+        
         public string Tittle { get; set; }
         public string Thumb { get; set; }
         public bool BestSellers { get; set; }

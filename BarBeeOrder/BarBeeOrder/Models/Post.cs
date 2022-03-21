@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -8,7 +9,9 @@ namespace BarBeeOrder.Models
     public partial class Post
     {
         public int PostId { get; set; }
+        [Required(ErrorMessage = "Vui lòng không để trống!")]
         public string Tittle { get; set; }
+        [Required(ErrorMessage = "Vui lòng không để trống!")]
         public string ShortContent { get; set; }
         public string PostContent { get; set; }
         public string Thumb { get; set; }

@@ -258,7 +258,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                             _notyfService.Success("Tạo mới thành công!");
                             return RedirectToAction(nameof(Index));
                         }
-                        ViewData["DanhMuc"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
+                        ViewData["DanhMuc"] = new SelectList(_context.Categories.Where(x=> x.IsDeleted == false && x.Type==1), "CategoryId", "Name", product.CategoryId);
                         return View(product);
                     }
                     catch
