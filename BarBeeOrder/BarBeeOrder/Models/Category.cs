@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -12,6 +13,8 @@ namespace BarBeeOrder.Models
             Products = new HashSet<Product>();
         }
 
+        
+        [Required(ErrorMessage = "Vui lòng không để trống!")]
         public int CategoryId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

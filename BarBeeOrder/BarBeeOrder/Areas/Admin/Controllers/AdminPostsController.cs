@@ -181,6 +181,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     {
                         ViewData["Account"] = khachhang;
                         ViewData["AccountId"] = new SelectList(_context.Customers, "AccountId", "AccountId");
+                        ViewData["DanhMuc"] = new SelectList(_context.Categories.Where(x => x.IsDeleted == false && x.Type == 2), "CategoryId", "Name");
                         return View();
                     }
                     catch
@@ -242,6 +243,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                             return RedirectToAction(nameof(Index));
                         }
                         ViewData["AccountId"] = new SelectList(_context.Customers, "AccountId", "AccountId", post.CustomerId);
+                        ViewData["DanhMuc"] = new SelectList(_context.Categories.Where(x => x.IsDeleted == false && x.Type == 2), "CategoryId", "Name", post.CategoryId);
                         return View(post);
                     }
                     catch
@@ -289,6 +291,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                             return NotFound();
                         }
                         ViewData["AccountId"] = new SelectList(_context.Customers, "AccountId", "AccountId", post.CustomerId);
+                        ViewData["DanhMuc"] = new SelectList(_context.Categories.Where(x => x.IsDeleted == false && x.Type == 2), "CategoryId", "Name", post.CategoryId);
                         return View(post);
                     }
                     catch
@@ -368,6 +371,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                             return RedirectToAction(nameof(Index));
                         }
                         ViewData["AccountId"] = new SelectList(_context.Customers, "AccountId", "AccountId", post.CustomerId);
+                        ViewData["DanhMuc"] = new SelectList(_context.Categories.Where(x => x.IsDeleted == false && x.Type == 2), "CategoryId", "Name", post.CategoryId);
                         return View(post);
                     }
                     catch

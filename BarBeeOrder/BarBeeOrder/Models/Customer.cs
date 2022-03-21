@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -12,14 +13,17 @@ namespace BarBeeOrder.Models
             Orders = new HashSet<Order>();
             Posts = new HashSet<Post>();
         }
-
+        [Required(ErrorMessage = "Vui lòng không để trống!")]
         public int CustomerId { get; set; }
+        [Required(ErrorMessage = "Vui lòng không để trống!")]
         public string Fullname { get; set; }
         public DateTime? Birtday { get; set; }
         public string Avatar { get; set; }
         public string Address { get; set; }
+        [Required(ErrorMessage = "Vui lòng không để trống!")]
         public string Email { get; set; }
         public string Phone { get; set; }
+        [Required(ErrorMessage = "Vui lòng không để trống!")]
         public string Password { get; set; }
         public bool Status { get; set; }
         public DateTime? LastLogin { get; set; }
