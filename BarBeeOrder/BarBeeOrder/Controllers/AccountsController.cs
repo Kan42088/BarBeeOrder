@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication;
 using BarBeeOrder.Extension;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using EmailService;
 
 namespace BarBeeOrder.Controllers
 {
@@ -21,11 +22,12 @@ namespace BarBeeOrder.Controllers
     {
         private readonly BarBeeOrderContext _context;
         public INotyfService _notyfService { get; }
-
-        public AccountsController(BarBeeOrderContext context, INotyfService notyfService)
+        private readonly IEmailSender _emailSender;
+        public AccountsController(BarBeeOrderContext context, INotyfService notyfService, IEmailSender emailSender)
         {
             _context = context;
             _notyfService = notyfService;
+            _emailSender = emailSender;
         }
         [HttpGet]
         [AllowAnonymous]
@@ -339,5 +341,39 @@ namespace BarBeeOrder.Controllers
             return RedirectToAction("Dashboard", "Accounts");
         }
 
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordModel forgotPasswordModel)
+        {
+            if (!ModelState.IsValid)
+                return View(forgotPasswordModel);
+
+            var user = await _context.Customers.AsNoTracking().FirstOrDefaultAsync(x=> x.Email == forgotPasswordModel.Email);
+            if (user == null)
+                return RedirectToAction(nameof(Login));
+            var randomPass = Utilities.GetRandomKey(8);
+            string passNew = (randomPass + user.Salt.Trim()).ToMD5();
+            user.Password = passNew;
+            _context.Update(user);
+            _context.SaveChanges();
+            _notyfService.Success("Đổi mật khẩu thành công, Kiểm tra lại email của bạn!");
+            string content = "Mật khẩu của bản đã được đặt lại thành:\n"+randomPass+"\nVui lòng đăng nhập lại và thay đổi mật khẩu!\nBarBeeOrder.";
+            var message = new Message(new string[] { user.Email }, "Mật khẩu đã được đặt lại!", content);
+            
+            
+            _emailSender.SendEmail(message);
+
+            return RedirectToAction(nameof(Login));
+        }
+
+       
     }
 }

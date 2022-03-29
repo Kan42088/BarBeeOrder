@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using System.Threading.Tasks;
+using EmailService;
 
 namespace BarBeeOrder
 {
@@ -32,6 +33,9 @@ namespace BarBeeOrder
             string stringConnnectDb = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<BarBeeOrderContext>(option => option.UseSqlServer(stringConnnectDb));
             services.AddNotyf(config => { config.DurationInSeconds = 5;config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
+            var emailConfig = Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+            services.AddSingleton(emailConfig);
+            services.AddScoped<IEmailSender, EmailSender>();
             services.AddSession();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
