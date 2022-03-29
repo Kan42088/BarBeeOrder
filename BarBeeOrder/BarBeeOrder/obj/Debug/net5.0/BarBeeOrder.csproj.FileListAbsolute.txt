@@ -2009,3 +2009,10 @@ E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\AdminPostCategories\Details.cshtml.g.cs
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\AdminPostCategories\Edit.cshtml.g.cs
 E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Areas\Admin\Views\AdminPostCategories\Index.cshtml.g.cs
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\MailKit.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\MimeKit.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\NETCore.MailKit.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\BouncyCastle.Crypto.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\EmailService.dll
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\bin\Debug\net5.0\EmailService.pdb
+E:\BarBeeOrderProject\BarBeeOrder\BarBeeOrder\BarBeeOrder\obj\Debug\net5.0\Razor\Views\Accounts\ForgotPassword.cshtml.g.cs
