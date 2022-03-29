@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
@@ -33,7 +34,17 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                     try
                     {
                         ViewData["Account"] = khachhang;
-                        return View();
+                        var today = DateTime.Now;
+                        List<Order> monthOrders = new List<Order>();
+                        monthOrders = _context.Orders.AsNoTracking().Where(x => x.OrderDate.Value.Month == today.Month).ToList();
+                        ViewBag.MonthOrders = monthOrders;
+                        List<Order> yearOrders = new List<Order>();
+                        yearOrders = _context.Orders.AsNoTracking().Where(x => x.OrderDate.Value.Year == today.Year).ToList();
+                        ViewBag.YearOrders = yearOrders;
+
+                        List<Order> model = new List<Order>();
+                        model = _context.Orders.AsNoTracking().Where(p=> p.Deleted==false).OrderBy(o=> o.OrderDate).Take(5).Include(o=> o.Customer).Include(t=> t.TransactionStatus).ToList();
+                        return View(model);
                     }
                     catch
                     {

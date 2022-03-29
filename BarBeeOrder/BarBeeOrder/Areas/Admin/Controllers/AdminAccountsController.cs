@@ -302,23 +302,23 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                         {
                             return NotFound();
                         }
-
+                        if (string.IsNullOrEmpty(account.Password))
+                        {
+                            var accountcheck = _context.Customers.AsNoTracking().FirstOrDefault(x => x.CustomerId == id);
+                            account.Password = accountcheck.Password;
+                        }
+                        else
+                        {
+                            account.Password = (account.Password.Trim() + account.Salt.Trim()).ToMD5();
+                        }
                         if (ModelState.IsValid)
                         {
                             try
                             {
-                                if (string.IsNullOrEmpty(account.Password))
-                                {
-                                    var accountcheck =  _context.Customers.AsNoTracking().FirstOrDefault(x=> x.CustomerId==id);
-                                    account.Password = accountcheck.Password;
-                                }
-                                else
-                                {
-                                    account.Password = (account.Password.Trim() + account.Salt.Trim()).ToMD5();
-                                }
+                                
                                 _context.Update(account);
-                                _notyfService.Success("Cập nhật thành công!");
                                 await _context.SaveChangesAsync();
+                                _notyfService.Success("Cập nhật thành công!");
                                 ViewData["Account"] = khachhang;
                             }
                             catch (DbUpdateConcurrencyException)
@@ -335,7 +335,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                             return RedirectToAction(nameof(Index));
                         }
                         ViewData["RollId"] = new SelectList(_context.Roles, "RoleId", "RoleName", account.RoleId);
-                        return View(account);
+                        return RedirectToAction(nameof(Index));
                     }
                     catch
                     {

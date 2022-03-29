@@ -70,6 +70,13 @@ namespace BarBeeOrder.Controllers
         [Route("tai-khoan-cua-toi.html", Name = "Dashboard")]
         public IActionResult Dashboard()
         {
+            List<Page> pages = new List<Page>();
+            pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuPages"] = pages;
+            List<Category> categories = new List<Category>();
+            categories = _context.Categories.AsNoTracking().Where(c => c.IsDeleted == false && c.Published == true && c.Type == 1).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuCategories"] = categories;
+
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
             if (taikhoanID != null)
             {
@@ -90,6 +97,12 @@ namespace BarBeeOrder.Controllers
         [Route("dang-ky.html", Name = "DangKy")]
         public async Task<IActionResult> Dangkitaikhoan()
         {
+            List<Category> categories = new List<Category>();
+            categories = _context.Categories.AsNoTracking().Where(c => c.IsDeleted == false && c.Published == true && c.Type == 1).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuCategories"] = categories;
+            List<Page> pages = new List<Page>();
+            pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuPages"] = pages;
             return View();
         }
 
@@ -98,6 +111,12 @@ namespace BarBeeOrder.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Dangkitaikhoan(RegisterVM taikhoan)
         {
+            List<Page> pages = new List<Page>();
+            pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuPages"] = pages;
+            List<Category> categories = new List<Category>();
+            categories = _context.Categories.AsNoTracking().Where(c => c.IsDeleted == false && c.Published == true && c.Type == 1).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuCategories"] = categories;
             try
             {
                 if (ModelState.IsValid)
@@ -156,6 +175,13 @@ namespace BarBeeOrder.Controllers
         [Route("dang-nhap.html", Name = "DangNhap")]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
+            List<Page> pages = new List<Page>();
+            pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuPages"] = pages;
+            List<Category> categories = new List<Category>();
+            categories = _context.Categories.AsNoTracking().Where(c => c.IsDeleted == false && c.Published == true && c.Type == 1).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuCategories"] = categories;
+
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
             
             if (taikhoanID != null)
@@ -171,6 +197,13 @@ namespace BarBeeOrder.Controllers
         [Route("dang-nhap.html", Name = "DangNhap")]
         public async Task<IActionResult> Login(LoginViewModel customer, string returnUrl = null)
         {
+            List<Page> pages = new List<Page>();
+            pages = _context.Pages.AsNoTracking().Where(p => p.IsHeader == true && p.Published == true).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuPages"] = pages;
+            List<Category> categories = new List<Category>();
+            categories = _context.Categories.AsNoTracking().Where(c => c.IsDeleted == false && c.Published == true && c.Type == 1).OrderBy(x => x.Ordering).ToList();
+            ViewData["MenuCategories"] = categories;
+
             try
             {
                 if (ModelState.IsValid)
