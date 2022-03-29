@@ -9,6 +9,8 @@ using BarBeeOrder.Models;
 
 using Microsoft.AspNetCore.Http;
 using PagedList.Core;
+using BarBeeOrder.Extension;
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace BarBeeOrder.Areas.Admin.Controllers
 {
@@ -16,10 +18,12 @@ namespace BarBeeOrder.Areas.Admin.Controllers
     public class AdminCustomersController : Controller
     {
         private readonly BarBeeOrderContext _context;
-
-        public AdminCustomersController(BarBeeOrderContext context)
+        public INotyfService _notyfService { get; }
+        public AdminCustomersController(BarBeeOrderContext context, INotyfService notyfService)
         {
             _context = context;
+            _notyfService = notyfService;
+
         }
 
         // GET: Admin/AdminCustomers
@@ -94,7 +98,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                             return NotFound();
                         }
 
-                        var customer = await _context.Customers
+                        var customer = await _context.Customers.Include(x=> x.Role)
                             .FirstOrDefaultAsync(m => m.CustomerId == id);
                         if (customer == null)
                         {
@@ -225,7 +229,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,Fullname,Birtday,Avatar,Address,Email,Phone,Password,Status,LastLogin,CreatedDate")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,Fullname,Salt,Address,Email,Phone,Password,Status,LastLogin,CreatedDate")] Customer customer)
         {
             var taikhoanID = HttpContext.Session.GetString("CustomerId");
             if (taikhoanID != null)
@@ -249,8 +253,20 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                         {
                             try
                             {
+                                if (string.IsNullOrEmpty(customer.Password))
+                                {
+                                    var accountcheck = _context.Customers.AsNoTracking().FirstOrDefault(x => x.CustomerId == id);
+                                    customer.Password = accountcheck.Password;
+                                }
+                                else
+                                {
+                                    customer.Password = (customer.Password.Trim() + customer.Salt.Trim()).ToMD5();
+                                }
+                                customer.RoleId = 2;
                                 _context.Update(customer);
                                 await _context.SaveChangesAsync();
+                                _notyfService.Success("Cập nhật thành công!");
+                                
                             }
                             catch (DbUpdateConcurrencyException)
                             {
@@ -265,7 +281,7 @@ namespace BarBeeOrder.Areas.Admin.Controllers
                             }
                             return RedirectToAction(nameof(Index));
                         }
-                        return View(customer);
+                        return RedirectToAction(nameof(Index));
                     }
                     catch
                     {

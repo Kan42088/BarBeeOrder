@@ -51,22 +51,27 @@ namespace BarBeeOrder
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/Error/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.Use(async (context, next) =>
             {
                 await next();
-                if (context.Response.StatusCode == 404)
+                if (context.Response.StatusCode == 404 || context.Response.StatusCode == 500)
                 {
                     context.Request.Path = "/Error/Error";
                     await next();
                 }
+                
+                
             });
             app.UseHttpsRedirection();
             app.UseStaticFiles();
